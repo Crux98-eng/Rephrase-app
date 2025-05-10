@@ -8,7 +8,7 @@ const AuthLayout = () => {
  <GestureHandlerRootView style={{flex:1}}> 
     <Stack screenOptions={{headerShown:false}}>
 
-       <Stack.Screen name='SignIn' options={{title: 'signIn',headerShown:false}}/>
+       <Stack.Screen name='signin' options={{title: 'signIn',headerShown:false}}/>
       <Stack.Screen name='signup'options={{title: 'Sign Up',headerShown:false}}/>
 
     </Stack>

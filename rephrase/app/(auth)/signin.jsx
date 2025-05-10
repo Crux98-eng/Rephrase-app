@@ -91,7 +91,7 @@ const SignIn = () => {
           <CustomButton
           styling={styles.buton}
             title={loading ? 'Logging in...' : 'Login'}
-            onPress={()=>{router.push('/chat')}}
+            onPress={()=>{router.push('/home')}}
             disabled={loading}
           />
 
