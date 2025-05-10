@@ -1,9 +1,13 @@
 import { Link } from 'expo-router';
-import { View, Text,Image,StyleSheet } from 'react-native';
+import { View, Text,Image,StyleSheet, SafeAreaView } from 'react-native';
+import { useNavigation } from 'expo-router';
+import { router } from 'expo-router';
 import CustomButton from './components/CustomButton';
-import icons from './assets/icons'
+
 export default function Page() {
+ 
   return (
+  <SafeAreaView>
     <View style={{ flex: 1, alignItems: 'center',width:'100%',height:'100%' }}>
   <Image
   source={require('./assets/images/onboardImage.png')}
@@ -13,9 +17,10 @@ export default function Page() {
       <Text style={{top:2}}></Text>
       {/* <Link href='/chat'>got to</Link> */}
            <View style={styles.btn}>
-      <CustomButton onPress={()=>{}} title='Get started' />
+      <CustomButton onPress={()=>{router.push('/signin')}} title='Get started' />
       </View>
     </View>
+   </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({

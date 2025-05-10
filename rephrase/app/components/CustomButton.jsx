@@ -1,10 +1,10 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-const CustomButton =({ title, onPress,style,bgcolor })=> {
+const CustomButton =({ title, onPress,styling,bgcolor })=> {
   return (
     <TouchableOpacity 
-    style={styles.button}
+      style={[styles.button,styling]}
      onPress={onPress}>
       <Text style={styles.buttonText}>{title}</Text>
     </TouchableOpacity>
@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 22,
     width: 300,
+    height:50,
     marginLeft:15,
     marginRight:15,
   },

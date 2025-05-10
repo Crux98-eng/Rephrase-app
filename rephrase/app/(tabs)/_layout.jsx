@@ -5,7 +5,7 @@ import { Stack, Tabs } from 'expo-router'
 const AuthLayout = () => {
   return (
   <Tabs>
-    <Tabs.Screen name='(auth)' options={{headerShown:false}}/>
+    <Tabs.Screen name='(tabs)' options={{headerShown:false}}/>
   </Tabs>
   )
 } 

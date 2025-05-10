@@ -1,15 +1,19 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { View, Text } from 'react-native'
 import React from 'react'
-import { Stack, Tabs } from 'expo-router'
+import { Stack } from 'expo-router'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
-const TabsLayout = () => {
+const AuthLayout = () => {
   return (
-  <Tabs>
-    <Tabs.Screen name='(tabs)' options={{headerShown:false}}/>
-  </Tabs>
+ <GestureHandlerRootView style={{flex:1}}> 
+    <Stack screenOptions={{headerShown:false}}>
+
+       <Stack.Screen name='SignIn' options={{title: 'signIn',headerShown:false}}/>
+      <Stack.Screen name='signup'options={{title: 'Sign Up',headerShown:false}}/>
+
+    </Stack>
+   </GestureHandlerRootView>
   )
-} 
+}
 
-export default TabsLayout
-
-const styles = StyleSheet.create({})
+export default AuthLayout
