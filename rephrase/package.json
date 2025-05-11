@@ -10,8 +10,10 @@
     "deploy": "npx expo export -p web && npx eas-cli@latest deploy"
   },
   "dependencies": {
+    "@flyerhq/react-native-chat-ui": "^1.4.3",
     "@react-native-community/netinfo": "11.4.1",
     "@react-navigation/native": "^7.1.8",
+    "@talkjs/react": "^0.1.11",
     "expo": "^53.0.4",
     "expo-constants": "~17.1.4",
     "expo-image-manipulator": "~13.1.6",
@@ -30,7 +32,9 @@
     "react-native-screens": "~4.10.0",
     "react-native-svg": "15.11.2",
     "react-native-web": "^0.20.0",
-    "stream-chat-expo": "^7.0.0"
+    "react-native-webview": "^13.13.5",
+    "stream-chat-expo": "^7.0.0",
+    "talkjs": "^0.37.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
