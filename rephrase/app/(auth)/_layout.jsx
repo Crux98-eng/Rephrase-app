@@ -6,7 +6,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 const AuthLayout = () => {
   return (
  <GestureHandlerRootView style={{flex:1}}> 
-    <Stack screenOptions={{headerShown:false}}>
+    <Stack>
 
        <Stack.Screen name='signin' options={{title: 'signIn',headerShown:false}}/>
       <Stack.Screen name='signup'options={{title: 'Sign Up',headerShown:false}}/>

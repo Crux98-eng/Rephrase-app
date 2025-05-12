@@ -6,10 +6,11 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
-// Sample chat data (initial state)
+// Sample chat data initial state
 const initialData = {
   message_id_1: {
     sender_user_id: 'unique_firebase_uid_of_user_alice',
@@ -26,7 +27,8 @@ const initialData = {
 };
 
 const ChatScreen = () => {
-  const { userId, name } = useLocalSearchParams(); // logged in user
+  // logged in user coming from main screen
+  const { userId, name } = useLocalSearchParams(); 
 
   const [chatMessages, setChatMessages] = useState(initialData);
   const [inputText, setInputText] = useState('');

@@ -21,7 +21,7 @@ const TabsIcon = ({ icon, color, focused }) => (
 const TabsLayout = () => {
  
   return (
-    <Tabs>
+    <Tabs headerShown:false>
       {/* chat*/}
       <Tabs.Screen
         name="home"
