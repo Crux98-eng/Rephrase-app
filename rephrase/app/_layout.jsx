@@ -5,7 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 const _layout = () => {
   return (
     <GestureHandlerRootView>
-    <Stack headerShown:false>
+    <Stack screenOptions={{headerShown:false}}>
         <Stack.Screen  name='index' options={{title:'index',headerShown:false}}/>
     </Stack>
     </GestureHandlerRootView>

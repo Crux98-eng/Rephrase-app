@@ -67,14 +67,22 @@ const messages = [
   },
 ];
 
+
 const Home = () => {
   const [name,setName]=useState('')
  
-  const handePress=(User)=>{
-   //console.log("user ",User);
-   router.push(`/chat/${User.id}`
- );
-   }
+ const handlePress = (user) => {
+  
+
+  // Encode name and avatar in query params
+  router.push({
+    pathname: `/chat/${user.id}`,
+    params: {
+      name: user.user.name,
+      avatar: user.user.avatar,
+    },
+  });
+};
   return (
    <SafeAreaView style={{flex:1,backgroundColor:'#ffff'}}>
 
@@ -89,7 +97,7 @@ const Home = () => {
         <Card 
       
           
-          onpress= {()=> handePress(item)}
+          onpress= {()=> handlePress(item)}
           name={item.user.name}
           
           profilePicture={item.user.avatar}

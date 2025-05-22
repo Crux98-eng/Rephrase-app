@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import { Tabs } from 'expo-router';
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 const ChatLayout = () => {
     const TabsIcon = ({ icon, color, focused }) => (
     
@@ -18,20 +18,23 @@ const ChatLayout = () => {
       </View>
     );
   return (
-    <Tabs>
-         <Tabs.Screen
-               name="chat"
-               options={{
-                 title: 'chatting',
-                 headerShown: true,
-                 tabBarIcon: ({ focused, color }) => (
-                   <TabsIcon icon={require('../assets/icons/home.png')} color={color} focused={focused} />
-                 ),
-               }}
-             />
-       
-
-    </Tabs>
+    <GestureHandlerRootView>
+   <Tabs screenOptions={{ headerShown: false }}>
+  <Tabs.Screen
+    name="chat"
+    options={{
+      title: 'chatting',
+      tabBarIcon: ({ focused, color }) => (
+        <TabsIcon
+          icon={require('../assets/icons/logo_secondary.png')}
+          color={color}
+          focused={focused}
+        />
+      ),
+    }}
+  />
+</Tabs>
+</GestureHandlerRootView>
   )
 }
 

@@ -8,7 +8,8 @@ import {
   View,
   Image
 } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Sample chat data initial state
 const initialData = {
@@ -29,6 +30,7 @@ const initialData = {
 const ChatScreen = () => {
   // logged in user coming from main screen
   const { userId, name } = useLocalSearchParams(); 
+ 
 
   const [chatMessages, setChatMessages] = useState(initialData);
   const [inputText, setInputText] = useState('');
@@ -72,9 +74,27 @@ const ChatScreen = () => {
       </View>
     );
   };
-
+const handleBack=()=>{
+  router.push('/home');
+  console.log("pressed");
+}
   return (
+ 
     <View style={styles.container}>
+      <Image 
+      source={require("../assets/icons/chatbg.png")}
+      style={styles.imageBg}
+      
+      />
+      <View style={styles.topBar}>
+        <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+          <Image 
+          source={require("../assets/icons/left-arrow.png")}
+           resizeMode='contentFit'
+          />
+        </TouchableOpacity>
+        <Text style={{color:'white',textAlign:'center'}}>{name}</Text>
+      </View>
       <FlatList
         data={messages}
         keyExtractor={(item) => item.id}
@@ -102,7 +122,39 @@ export default ChatScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
+    
+  },
+  backButton:{
+    display:'flex',
+    position:'absolute',
+    left:20,
+    top:40,
+   width:40,
+   justifyContent:'center',
+   alignContent:'center',
+   height:40,
+  
+   padding:5,
+  },
+  imageBg:{
+   flex:1,
+  
+   justifyContent:'center',
+   width:'100%',
+   height:'100%',
+   position:'absolute'
+
+
+  },
+  topBar:{
+    width:'100%',
+    height:100,
+     marginTop:25,
+    backgroundColor:'#1B0333',
+    shadowColor:'black',
+    justifyContent:'center',
+    position:'fixed',
   },
   chatContainer: {
     padding: 12,
@@ -115,18 +167,18 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   mine: {
-    backgroundColor: '#0078fe',
+    backgroundColor: '#000066',
     alignSelf: 'flex-end',
   },
   theirs: {
-    backgroundColor: '#000066',
+    backgroundColor: '#FF8C00',
     alignSelf: 'flex-start',
   },
   senderName: {
     fontSize: 12,
     fontWeight: 'bold',
     marginBottom: 2,
-    color: '#555',
+    color: '#1B0333',
   },
   messageText: {
     fontSize: 16,
@@ -153,7 +205,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
   },
   sendButton: {
-    backgroundColor: '#0078fe',
+    backgroundColor: '#1B0333',
     paddingHorizontal: 20,
     marginLeft: 8,
     borderRadius: 20,

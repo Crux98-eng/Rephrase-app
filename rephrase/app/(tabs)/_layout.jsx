@@ -21,7 +21,7 @@ const TabsIcon = ({ icon, color, focused }) => (
 const TabsLayout = () => {
  
   return (
-    <Tabs headerShown:false>
+    <Tabs >
       {/* chat*/}
       <Tabs.Screen
         name="home"
@@ -34,18 +34,7 @@ const TabsLayout = () => {
         }}
       />
 
- {/* create button */}
-{/* <Tabs.Screen
-        name ="[userid]"
-        options={{
-          title:'chat',
-          headerShown: true,
-          tabBarIcon: ({ focused, color }) => (
 
-            <TabsIcon icon={require('../assets/icons/logo_secondary.png')} color={color} focused={focused} />
-          ),
-        }}
-      />   */}
     </Tabs>
   );
 };
