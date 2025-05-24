@@ -16,13 +16,13 @@ const initialData = {
   message_id_1: {
     sender_user_id: 'unique_firebase_uid_of_user_alice',
     sender_display_name: 'Alice (the amazing)',
-    message_content: "Hello everyone! Let's start chatting!",
+    message_content: "hi eric how are you!",
     sent_timestamp_ms: 1700000010000,
   },
   message_id_2: {
-    sender_user_id: 'unique_firebase_uid_of_user_bob',
-    sender_display_name: 'Bob the Builder',
-    message_content: 'Hey Alice! Sounds like a plan. Excited to try this out.',
+    sender_user_id: 'unique_firebase_uid_of_user_alice',
+    sender_display_name: 'Alice (the amazing)',
+    message_content: ' Excited to try this out.',
     sent_timestamp_ms: 1700000011000,
   },
 };

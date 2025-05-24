@@ -2,7 +2,7 @@ import { View, StyleSheet, Image ,Text, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import {signInWithEmailAndPassword} from 'firebase/auth';
 
 import { FormField } from '../components/form';
 import CustomButton from '../components/CustomButton';
@@ -20,48 +20,43 @@ const SignIn = () => {
   const [userId, setUserId]=useState('');
   const url='http://192.168.168.208:3001/';
 
-  // const handleSubmit = async () => {
-  //   if (!form.email || !form.password) {
-  //     Alert.alert('Error', 'Please fill in both email and password.');
-  //     return;
-  //   }
+  const handleSubmit = async () => {
+    if (!form.email || !form.password) {
+      Alert.alert('Error', 'Please fill in both email and password.');
+      return;
+    }
 
-  //   setLoading(true);
+    setLoading(true);
 
-  //   try {
-  //     const response = await fetch(`${url}customer/login`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(form),
-  //     });
-  //     console.log(response);
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       Alert.alert('Success', 'Login successful!');
-  //       // Save the token and navigate to the home page
+    try {
+      const response = await signInWithEmailAndPassword(auth,email,password);
+      
+      console.log(response);
+      if (response.ok) {
+        const data = await response.json();
+        Alert.alert('Success', 'Login successful!');
+        // Save the token and navigate to the home page
         
-  //       await AsyncStorage.setItem('token', data.token);
-  //       const userID=(data.user_id);
-  //       //console.log("user id = ",data.user.user_id);
-  //       const userid=data.user.user_id;
+        await AsyncStorage.setItem('token', data.token);
+        const userID=(data.user_id);
+        console.log("user id = ",data.user.user_id);
+        const userid=data.user.user_id;
     
-  //     router.push(`/profile?userid=${userid}`);
-  //     } else {
-  //       const errorText = await response.text();
-  //       const errorMessage = response.headers.get('content-type')?.includes('application/json')
-  //         ? JSON.parse(errorText)?.message
-  //         : errorText;
-  //       Alert.alert('Error', errorMessage || 'Invalid credentials');
-  //     }
-  //   } catch (error) {
-  //     console.error('Login error:', error);
-  //     Alert.alert('Error', 'Something went wrong. Please try again later.');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+      router.push(`/profile?userid=${userid}`);
+      } else {
+        const errorText = await response.text();
+        const errorMessage = response.headers.get('content-type')?.includes('application/json')
+          ? JSON.parse(errorText)?.message
+          : errorText;
+        Alert.alert('Error', errorMessage || 'Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      Alert.alert('Error', 'Something went wrong. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView>

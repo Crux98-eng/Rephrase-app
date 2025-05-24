@@ -3,49 +3,45 @@ import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 
-
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from './firebase';
 import { FormField } from '../components/form';
 import  CustomButton  from '../components/CustomButton'
 import { Link, router } from 'expo-router';
 
-const url= 'http://192.168.168.208:3001/customer/signUp'
+
 const SignUp = () => {
   const [form, setForm] = useState({ name: '', email: '', password: '',phone:'' });
   const [loading, setLoading] = useState(false);
 
-  // const handleSubmit = async () => {
+  const handleSubmit = async () => {
 
-  //   if (!form.name || !form.phone|| !form.email || !form.password) {
-  //     Alert.alert('Error', 'Please fill in all the fields 1.');
-  //     return;
-  //   }
+    if (!form.name || !form.phone|| !form.email || !form.password) {
+      Alert.alert('Error', 'Please fill in all the fields 1.');
+      return;
+    }
 
-  //   setLoading(true);
+    setLoading(true);
 
-  //   try {
-  //     const response = await fetch(`${url}`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(form),
-  //     });
+    try {
+     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    console.log('User registered:', userCredential.user);
 
-  //     if (response.ok && response) {
-  //       const data = await response.json();
-  //       Alert.alert('Success', 'Registration successful!');
-  //       router.push('/signIn'); // Navigate to the SignIn page after successful registration
-  //     } else {
-  //       const errorMessage = await response.text();
-  //       Alert.alert('Error', errorMessage || 'Something went wrong.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Registration error:', error);
-  //     Alert.alert('Error', 'Something went wrong. Please try again later.');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+      // if (response.ok && response) {
+      //   const data = await response.json();
+      //   Alert.alert('Success', 'Registration successful!');
+      //   router.push('/signIn'); // Navigate to the SignIn page after successful registration
+      // } else {
+      //   const errorMessage = await response.text();
+      //   Alert.alert('Error', errorMessage || 'Something went wrong.');
+      // }
+    } catch (error) {
+      console.error('Registration error:', error);
+      Alert.alert('Error', 'Something went wrong. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView>

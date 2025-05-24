@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View,FlatList, SafeAreaView,ScrollView} from 'react-native'
+import { StyleSheet,Image, Text, View,FlatList, SafeAreaView,ScrollView} from 'react-native'
 import React, { useState } from 'react'
 import Card from '../components/card';
 import { router } from 'expo-router';
@@ -65,6 +65,26 @@ const messages = [
       avatar: "https://example.com/avatar2.jpg",
     },
   },
+  {
+    id: 7,
+    text: "Sounds awesome! Let me know if you need any help.",
+    createdAt: new Date(),
+    user: {
+      _id: 2,
+      name: "Bob",
+      avatar: "https://example.com/avatar2.jpg",
+    },
+  },
+  {
+    id: 8,
+    text: "Sounds awesome! Let me know if you need any help.",
+    createdAt: new Date(),
+    user: {
+      _id: 2,
+      name: "Bob",
+      avatar: "https://example.com/avatar2.jpg",
+    },
+  },
 ];
 
 
@@ -85,8 +105,35 @@ const Home = () => {
 };
   return (
    <SafeAreaView style={{flex:1,backgroundColor:'#ffff'}}>
+ <View style={styles.topFlatlist}>
+     <FlatList 
+     
+     data={messages}
+     renderItem={({item})=>{
+      return(
+        <View style={[styles.imgicons,{display:'flex',alignItems:'start',marginTop:20}]}>
+          <Image 
+          source={require("../assets/icons/profile.png")}
+           style={{width:50,height:50,
+            resizeMode:'contain',
+            backgroundColor:'white',
+            borderRadius:50,
+            marginLeft:20,
+          
+          }}
+           
+          />
+           <Text style={{marginLeft:30,marginTop:5,color:'white'}}>{item.user.name}</Text>
+        </View>
+      )
 
+     }}
+     horizontal
+     keyExtractor={(item)=>{item.user._id}}
+     />
+ </View>
     <View style={styles.container}>
+   
    
      <FlatList
         data={messages}
@@ -109,7 +156,7 @@ const Home = () => {
          )
     
         }}
-        keyExtractor={(item)=> item.id}
+        keyExtractor={(item)=> item.user.id}
       />
 </View>
 
@@ -124,6 +171,7 @@ container:{
   flex:1,
   width:'100%',
   height:'100%',
+
   backgroundColor:'#fff',
 },
 line:{
@@ -131,6 +179,20 @@ line:{
   height:2,
   backgroundColor:'grey',
   opacity:0.1,
-}
+},
+topFlatlist:{
+  width:'96%',
+  alignSelf:'center',
+  borderRadius:10,
+  marginTop:20,
+  height:100,
+  borderTopRightRadius:'back',
+  backgroundColor:'#1B0333',
+  
+},
+imgicons:{
+
+},
+
 
 })
