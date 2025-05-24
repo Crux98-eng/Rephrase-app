@@ -9,6 +9,7 @@ import CustomButton from '../components/CustomButton';
 import { Link, router } from 'expo-router';
 
 import { useNavigation } from 'expo-router';
+// import auth from '../../firebase';
 // import jwt_decode from 'jwt-decode';
 
 
@@ -18,7 +19,7 @@ const SignIn = () => {
     
   const [loading, setLoading] = useState(false);
   const [userId, setUserId]=useState('');
-  const url='http://192.168.168.208:3001/';
+ 
 
   const handleSubmit = async () => {
     if (!form.email || !form.password) {
@@ -29,8 +30,8 @@ const SignIn = () => {
     setLoading(true);
 
     try {
-      const response = await signInWithEmailAndPassword(auth,email,password);
-      
+      // const response = await signInWithEmailAndPassword(auth,email,password);
+      const response = "djdfjjfjf";
       console.log(response);
       if (response.ok) {
         const data = await response.json();

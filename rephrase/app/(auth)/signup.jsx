@@ -2,46 +2,61 @@ import { View, StyleSheet, Text, Image,Alert } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
+import { FIREBASE_AUTH } from '../../firebase'
+import { createUserWithEmailAndPassword, getAuth, updatePhoneNumber } from 'firebase/auth';
 
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from './firebase';
+
 import { FormField } from '../components/form';
 import  CustomButton  from '../components/CustomButton'
 import { Link, router } from 'expo-router';
 
 
+const auth =  FIREBASE_AUTH ;
+
 const SignUp = () => {
-  const [form, setForm] = useState({ name: '', email: '', password: '',phone:'' });
+  const [form, setForm] = useState({ email: '', password: '',name:'',phone:'' });
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
+  if (!form.email || !form.password ||!form.name || !form.phone) {
+    Alert.alert('Error', 'Please fill in all the fields.');
+    return;
+  }
 
-    if (!form.name || !form.phone|| !form.email || !form.password) {
-      Alert.alert('Error', 'Please fill in all the fields 1.');
-      return;
+  setLoading(true);
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
+    const token = await userCredential.user.getIdToken();
+     console.log('                 \n',token,'\n           ');
+    const response = await fetch('http://localhost:8080/api/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+      fullName:form.name,
+   
+      }),
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    if (response.ok) {
+      Alert.alert('Success', 'Registration successful!');
+      router.push('/signIn');
+    } else {
+      Alert.alert('Error', data.message || 'Something went wrong.');
     }
-
-    setLoading(true);
-
-    try {
-     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    console.log('User registered:', userCredential.user);
-
-      // if (response.ok && response) {
-      //   const data = await response.json();
-      //   Alert.alert('Success', 'Registration successful!');
-      //   router.push('/signIn'); // Navigate to the SignIn page after successful registration
-      // } else {
-      //   const errorMessage = await response.text();
-      //   Alert.alert('Error', errorMessage || 'Something went wrong.');
-      // }
-    } catch (error) {
-      console.error('Registration error:', error);
-      Alert.alert('Error', 'Something went wrong. Please try again later.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (error) {
+    console.error('Registration error:', error);
+    Alert.alert('Error', 'Something went wrong. Please try again later.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <SafeAreaView>
@@ -79,10 +94,11 @@ const SignUp = () => {
           <CustomButton
           styling={styles.btn}
             title={loading ? 'Registering...' : 'Sign Up'}
-            onPress={()=>{}}
+            onPress={handleSubmit}
             disabled={loading}
 
           />
+         
 
           <View style={styles.onotherOption}>
             <Text style={styles.text1}>Already have an account?</Text>
