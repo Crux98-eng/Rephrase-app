@@ -1,4 +1,4 @@
-import { StyleSheet,Image, Text, View,FlatList, SafeAreaView,ScrollView} from 'react-native'
+import { StyleSheet,Image, Text, View,FlatList, SafeAreaView,ScrollView, TouchableOpacity} from 'react-native'
 import React, { useState } from 'react'
 import Card from '../components/card';
 import { router } from 'expo-router';
@@ -30,7 +30,7 @@ const messages = [
     text: "Good to hear! Just working on a project.",
     createdAt: new Date(),
     user: {
-      _id: 1,
+      _id: 3,
       name: "Alice",
       avatar: "https://example.com/avatar1.jpg",
     },
@@ -40,7 +40,7 @@ const messages = [
     text: "Nice, what kind of project?",
     createdAt: new Date(),
     user: {
-      _id: 2,
+      _id: 4,
       name: "Bob",
       avatar: "https://example.com/avatar2.jpg",
     },
@@ -50,7 +50,7 @@ const messages = [
     text: "I'm building a navigation app with real-time chat functionality.",
     createdAt: new Date(),
     user: {
-      id: 1,
+      id: 5,
       name: "Alice",
       avatar: "https://example.com/avatar1.jpg",
     },
@@ -60,7 +60,7 @@ const messages = [
     text: "Sounds awesome! Let me know if you need any help.",
     createdAt: new Date(),
     user: {
-      _id: 2,
+      _id: 6,
       name: "Bob",
       avatar: "https://example.com/avatar2.jpg",
     },
@@ -70,7 +70,7 @@ const messages = [
     text: "Sounds awesome! Let me know if you need any help.",
     createdAt: new Date(),
     user: {
-      _id: 2,
+      _id: 7,
       name: "Bob",
       avatar: "https://example.com/avatar2.jpg",
     },
@@ -80,7 +80,7 @@ const messages = [
     text: "Sounds awesome! Let me know if you need any help.",
     createdAt: new Date(),
     user: {
-      _id: 2,
+      _id: 8,
       name: "Bob",
       avatar: "https://example.com/avatar2.jpg",
     },
@@ -105,6 +105,12 @@ const Home = () => {
 };
   return (
    <SafeAreaView style={{flex:1,backgroundColor:'#ffff'}}>
+    <View style={styles.logout}>
+      <TouchableOpacity>
+         <Text>Log Out</Text>
+      </TouchableOpacity>
+
+    </View>
  <View style={styles.topFlatlist}>
      <FlatList 
      
@@ -129,7 +135,7 @@ const Home = () => {
 
      }}
      horizontal
-     keyExtractor={(item)=>{item.user._id}}
+     keyExtractor={item=>item.id}
      />
  </View>
     <View style={styles.container}>
@@ -156,7 +162,7 @@ const Home = () => {
          )
     
         }}
-        keyExtractor={(item)=> item.user.id}
+        keyExtractor={item=> item.user._id}
       />
 </View>
 
@@ -179,6 +185,14 @@ line:{
   height:2,
   backgroundColor:'grey',
   opacity:0.1,
+},
+logout:{
+ display:'flex',
+ position:'absolute',
+ top:0,
+ backgroundColor:'red'
+
+
 },
 topFlatlist:{
   width:'96%',

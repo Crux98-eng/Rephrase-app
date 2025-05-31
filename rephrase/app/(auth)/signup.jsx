@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 import { FIREBASE_AUTH } from '../../firebase'
-import { createUserWithEmailAndPassword, getAuth, updatePhoneNumber } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 
 import { FormField } from '../components/form';
@@ -29,7 +29,7 @@ const SignUp = () => {
     const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
     const token = await userCredential.user.getIdToken();
      console.log('                 \n',token,'\n           ');
-    const response = await fetch('http://localhost:8080/api/auth/register', {
+    const response = await fetch('http://192.168.197.200:8080/api/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -43,10 +43,10 @@ const SignUp = () => {
 
     const data = await response.json();
   
-
+console.log("\n\ndata  = ============" ,data );
     if (response.ok) {
       Alert.alert('Success', 'Registration successful!');
-      router.push('/signIn');
+      router.push('/signin');
     } else {
       Alert.alert('Error', data.message || 'Something went wrong.');
     }
