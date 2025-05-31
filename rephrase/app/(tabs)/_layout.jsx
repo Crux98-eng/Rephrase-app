@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { View, Image, TouchableOpacity, Alert } from 'react-native';
 import React from 'react';
-import { Tabs,useNavigation  } from 'expo-router';
-import { useRoute } from '@react-navigation/native';
+import { Tabs, router } from 'expo-router';
+import { signOut } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {FIREBASE_AUTH} from '../../firebase'
 
 const TabsIcon = ({ icon, color, focused }) => (
-
   <View>
     <Image
       source={icon}
@@ -17,24 +18,58 @@ const TabsIcon = ({ icon, color, focused }) => (
     />
   </View>
 );
-
+const auth = FIREBASE_AUTH;
 const TabsLayout = () => {
- 
+  
+  const logout = async () => {
+    try {
+      await signOut(auth); // Firebase sign out
+      await AsyncStorage.removeItem('token'); // Clear token from storage
+      router.replace('/signin'); // Navigate to signin screen
+    } catch (error) {
+      Alert.alert('Error', 'Failed to log out. Try again.');
+      console.error('Logout error:', error);
+    }
+  };
+
   return (
-    <Tabs >
-      {/* chat*/}
+    <Tabs>
       <Tabs.Screen
         name="home"
         options={{
           title: 'Home',
           headerShown: true,
           tabBarIcon: ({ focused, color }) => (
-            <TabsIcon icon={require('../assets/icons/home.png')} color={color} focused={focused} />
+            <TabsIcon
+              icon={require('../assets/icons/home.png')}
+              color={color}
+              focused={focused}
+            />
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              style={{
+                width: 50,
+                height: 50,
+                right: 20,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onPress={logout}
+            >
+              <Image
+                source={require('../assets/icons/logout.png')}
+                resizeMode="contain"
+                style={{
+                  width: 30,
+                  height: 30,
+                  tintColor: '#000066',
+                }}
+              />
+            </TouchableOpacity>
           ),
         }}
       />
-
-
     </Tabs>
   );
 };

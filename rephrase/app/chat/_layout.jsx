@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text ,StyleSheet,Image} from 'react-native'
 import React from 'react'
 import { Tabs } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -19,14 +19,17 @@ const ChatLayout = () => {
     );
   return (
     <GestureHandlerRootView>
-   <Tabs screenOptions={{ headerShown: false }}>
+   <Tabs screenOptions={{ 
+    headerShown: false,
+    
+    }}>
   <Tabs.Screen
     name="chat"
     options={{
       title: 'chatting',
       tabBarIcon: ({ focused, color }) => (
         <TabsIcon
-          icon={require('../assets/icons/logo_secondary.png')}
+          icon={require('../assets/icons/menu.png')}
           color={color}
           focused={focused}
         />

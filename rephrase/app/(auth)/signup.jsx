@@ -28,7 +28,7 @@ const SignUp = () => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
     const token = await userCredential.user.getIdToken();
-     console.log('                 \n',token,'\n           ');
+    // console.log('                 \n',token,'\n           ');
     const response = await fetch('http://192.168.197.200:8080/api/auth/register', {
       method: 'POST',
       headers: {
@@ -43,7 +43,7 @@ const SignUp = () => {
 
     const data = await response.json();
   
-console.log("\n\ndata  = ============" ,data );
+//console.log("\n\ndata  = ============" ,data );
     if (response.ok) {
       Alert.alert('Success', 'Registration successful!');
       router.push('/signin');

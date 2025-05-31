@@ -105,12 +105,7 @@ const Home = () => {
 };
   return (
    <SafeAreaView style={{flex:1,backgroundColor:'#ffff'}}>
-    <View style={styles.logout}>
-      <TouchableOpacity>
-         <Text>Log Out</Text>
-      </TouchableOpacity>
-
-    </View>
+    
  <View style={styles.topFlatlist}>
      <FlatList 
      
@@ -162,7 +157,7 @@ const Home = () => {
          )
     
         }}
-        keyExtractor={item=> item.user._id}
+        keyExtractor={item=> item.id}
       />
 </View>
 
@@ -186,14 +181,8 @@ line:{
   backgroundColor:'grey',
   opacity:0.1,
 },
-logout:{
- display:'flex',
- position:'absolute',
- top:0,
- backgroundColor:'red'
 
 
-},
 topFlatlist:{
   width:'96%',
   alignSelf:'center',

@@ -2,14 +2,11 @@ import { View, StyleSheet, Image ,Text, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
-import {signInWithEmailAndPassword} from 'firebase/auth';
+import { signInWithEmailAndPassword} from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../firebase'
-
 import { FormField } from '../components/form';
 import CustomButton from '../components/CustomButton';
 import { Link, router } from 'expo-router';
-
-import { useNavigation } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -22,55 +19,7 @@ const SignIn = () => {
   const [userId, setUserId]=useState('');
    const auth = FIREBASE_AUTH;
 
-  // const handleSubmit = async () => {
-
-  //   if (!form.email || !form.password) {
-  //     Alert.alert('Error', 'Please fill in both email and password.');
-  //     return;
-  //   }
-
-  //   setLoading(true);
-  //   try{
-  //  const userCredential = await signInWithEmailAndPassword(auth, form.email, form.password);
-  //   const token = await userCredential.user.getIdToken();
-
-  //  //console.log("\n\n", token ,"\n\n")
-
-  //  const response = await fetch('http://192.168.197.200:8080/api/auth/me',
-  //   {
-  //  method:'GET',
-  //  'Content-Type': 'application/json',
-  //  Authorization: `Bearer ${token}`,
-    
-  // });
-  // const data = response.json();
-   
-   
-  //    if (response.ok) {
-        
-  //       Alert.alert('Success', 'Login successful!');
-        
-        
-  //       await AsyncStorage.setItem('token', data.token);
-  //       const userID=(data.user_id);
-  //       console.log("user id = ",data.user.user_id);
-  //       const userid=data.user.user_id;
-    
-  //     router.push('/home');
-  //     } else {
-  //       const errorText = await response.text();
-  //       const errorMessage = response.headers.get('content-type')?.includes('application/json')
-  //         ? JSON.parse(errorText)?.message
-  //         : errorText;
-  //       Alert.alert('Error', errorMessage || 'Invalid credentials');
-  //     }
-  //   } catch (error) {
-  //     console.error('Login error:', error);
-  //     Alert.alert('Error', 'Something went wrong. Please try again later.');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  
 const handleSubmit = async () => {
   // Check if both email and password are provided
   if (!form.email || !form.password) {
@@ -98,13 +47,13 @@ const handleSubmit = async () => {
 
     // Parse the JSON response (only once!)
     const data = await response.json();
-
+  
     if (response.ok) {
       // Successful login
       Alert.alert('Success', 'Login successful!');
 
       // Store token locally (optional if you're using Firebase token directly)
-      //await AsyncStorage.setItem('token', data.token);
+      await AsyncStorage.setItem('token',token);
 
       // Extract and log user ID
      // const userID = data.user.user_id;
