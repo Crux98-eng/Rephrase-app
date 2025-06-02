@@ -14,8 +14,8 @@ const Card = ({ name,onpress, profilePicture, date }) => {
       <View style={styles.card}>
         <View style={styles.header}>
           <Image
-            source={profilePicture}
-            style={styles.image}
+            source={{uri:profilePicture}}
+            style={styles.images}
           />
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.date}>{date.toLocaleString()}</Text>
@@ -59,12 +59,12 @@ const styles = StyleSheet.create({
 
 
   },
-  image: {
+  images: {
     width: 50,
     height: 50,
-    resizeMode: 'cover',
+    resizeMode: 'contentFit',
     borderRadius: 25,
-    backgroundColor: 'grey',
+   backgroundColor:'#8686DB',
     marginRight: 12,
   },
   infoContainer: {

@@ -4,6 +4,7 @@ import { Tabs, router } from 'expo-router';
 import { signOut } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {FIREBASE_AUTH} from '../../firebase'
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const TabsIcon = ({ icon, color, focused }) => (
   <View>
@@ -33,6 +34,7 @@ const TabsLayout = () => {
   };
 
   return (
+    <GestureHandlerRootView>
     <Tabs>
       <Tabs.Screen
         name="home"
@@ -71,6 +73,7 @@ const TabsLayout = () => {
         }}
       />
     </Tabs>
+    </GestureHandlerRootView>
   );
 };
 

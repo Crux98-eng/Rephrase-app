@@ -5,10 +5,10 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 const ChatLayout = () => {
     const TabsIcon = ({ icon, color, focused }) => (
     
-      <View>
+      <View style={{justifyContent:'center',alignItems:'center'}}>
         <Image
           source={icon}
-          resizeMode="contain"
+          resizeMode="contentFit"
           style={{
             width: 20,
             height: 20,
@@ -30,6 +30,7 @@ const ChatLayout = () => {
       tabBarIcon: ({ focused, color }) => (
         <TabsIcon
           icon={require('../assets/icons/menu.png')}
+          
           color={color}
           focused={focused}
         />

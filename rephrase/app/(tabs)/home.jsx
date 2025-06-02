@@ -1,9 +1,10 @@
-import { StyleSheet,Image, Text, View,FlatList, SafeAreaView,ScrollView, TouchableOpacity} from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Image, Text, View, FlatList, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native'
+import React, { useState, useRef, useMemo, useCallback } from 'react'
 import Card from '../components/card';
 import { router } from 'expo-router';
-
-
+import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import { BorderlessButton, TextInput } from 'react-native-gesture-handler';
+import { FormField } from '../components/form'
 const messages = [
   {
     id: 1,
@@ -11,8 +12,8 @@ const messages = [
     createdAt: new Date(),
     user: {
       _id: 1,
-      name: "Alice",
-      avatar: "https://example.com/avatar1.jpg",
+      name: "John",
+      avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
     },
   },
   {
@@ -22,7 +23,7 @@ const messages = [
     user: {
       _id: 2,
       name: "Bob",
-      avatar: "https://example.com/avatar2.jpg",
+       avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
     },
   },
   {
@@ -31,8 +32,8 @@ const messages = [
     createdAt: new Date(),
     user: {
       _id: 3,
-      name: "Alice",
-      avatar: "https://example.com/avatar1.jpg",
+      name: "Mark",
+      avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
     },
   },
   {
@@ -41,8 +42,8 @@ const messages = [
     createdAt: new Date(),
     user: {
       _id: 4,
-      name: "Bob",
-      avatar: "https://example.com/avatar2.jpg",
+      name: "Harry",
+       avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
     },
   },
   {
@@ -51,8 +52,8 @@ const messages = [
     createdAt: new Date(),
     user: {
       id: 5,
-      name: "Alice",
-      avatar: "https://example.com/avatar1.jpg",
+      name: "Dvid",
+      avatar: "https://api.dicebear.com/9.x/pixel-art/png",
     },
   },
   {
@@ -62,7 +63,7 @@ const messages = [
     user: {
       _id: 6,
       name: "Bob",
-      avatar: "https://example.com/avatar2.jpg",
+       avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
     },
   },
   {
@@ -71,8 +72,8 @@ const messages = [
     createdAt: new Date(),
     user: {
       _id: 7,
-      name: "Bob",
-      avatar: "https://example.com/avatar2.jpg",
+      name: "Methews (mr.Awerson)",
+      avatar: "https://api.dicebear.com/9.x/bottts/png?flip=false",
     },
   },
   {
@@ -81,121 +82,199 @@ const messages = [
     createdAt: new Date(),
     user: {
       _id: 8,
-      name: "Bob",
-      avatar: "https://example.com/avatar2.jpg",
+      name: "John Doe",
+      avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
     },
   },
 ];
 
 
+
 const Home = () => {
-  const [name,setName]=useState('')
- 
- const handlePress = (user) => {
-  
+  const [name, setName] = useState('')
 
-  // Encode name and avatar in query params
-  router.push({
-    pathname: `/chat/${user.id}`,
-    params: {
-      name: user.user.name,
-      avatar: user.user.avatar,
-    },
-  });
-};
-  return (
-   <SafeAreaView style={{flex:1,backgroundColor:'#ffff'}}>
-    
- <View style={styles.topFlatlist}>
-     <FlatList 
-     
-     data={messages}
-     renderItem={({item})=>{
-      return(
-        <View style={[styles.imgicons,{display:'flex',alignItems:'start',marginTop:20}]}>
-          <Image 
-          source={require("../assets/icons/profile.png")}
-           style={{width:50,height:50,
-            resizeMode:'contain',
-            backgroundColor:'white',
-            borderRadius:50,
-            marginLeft:20,
-          
-          }}
-           
-          />
-           <Text style={{marginLeft:30,marginTop:5,color:'white'}}>{item.user.name}</Text>
-        </View>
-      )
+  const bottomSheetRef = useRef(null);
+  const snapPoints = useMemo(() => ['1', '20%', '40%', '90%'], []);
+  const openBottomSheet = () => {
+    if (bottomSheetRef.current) bottomSheetRef.current.expand();
+  };
+  const handlePress = (user) => {
+    // Encode name and avatar in query params
 
-     }}
-     horizontal
-     keyExtractor={item=>item.id}
-     />
- </View>
-    <View style={styles.container}>
-   
-   
-     <FlatList
-        data={messages}
-        renderItem={({item}) => {
-         return(
-          <>
-      
-        <Card 
-      
-          
-          onpress= {()=> handlePress(item)}
-          name={item.user.name}
-          
-          profilePicture={item.user.avatar}
-          date={item.createdAt}
-          
-          />
-          <View style={styles.line}></View>
-          </>
-         )
-    
-        }}
-        keyExtractor={item=> item.id}
+   // console.log("==============", user.user.avatar)
+    router.push({
+      pathname: `/chat/${user.id}`,
+      params: {
+        name: user.user.name,
+        avatar: user.user.avatar,
+        msg:user.text,
+        date:user.createdAt
+      },
+    });
+  };
+  const topHandlePress = (user) => {
+    // Encode name and avatar in query params
+    //console.log("==============",user)
+    router.push({
+      pathname: `/chat/${user.id}`,
+      params: {
+        name: user.user.name,
+        avatar: user.user.avatar,
+        msg:user.text,
+        date:user.createdAt
+      },
+    });
+  };
+  const renderBackdrop = useCallback(
+    (props) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}    // Fully disappears when sheet is closed
+        appearsOnIndex={0}        // Appears as soon as sheet is opened
+        pressBehavior="close"     // Closes sheet when tapping backdrop
+        opacity={0.7}             // Darkness level
       />
-</View>
+    ),
+    []
+  );
 
-</SafeAreaView>
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#ffff' }}>
+
+      <View style={styles.topFlatlist}>
+        <FlatList
+
+          data={messages}
+          renderItem={({ item }) => {
+            return (
+              <View style={[styles.imgicons, { display: 'flex', alignItems: 'start', marginTop: 20 }]}>
+                <TouchableOpacity onPress={()=>topHandlePress(item)}>
+                <Image
+                  source={{uri:item.user.avatar}}
+                  style={{
+                    width: 50, height: 50,
+                    resizeMode: 'contain',
+                    backgroundColor: 'white',
+                    borderRadius: 50,
+                    marginLeft: 20,
+
+                  }}
+
+                />
+                </TouchableOpacity>
+                <Text style={{ marginLeft: 30, marginTop: 5, color: 'white' }}>{item.user.name}</Text>
+              </View>
+            )
+
+          }}
+          horizontal
+          keyExtractor={item => item.id}
+        />
+      </View>
+      <View style={styles.container}>
+ 
+
+        <FlatList
+          data={messages}
+          renderItem={({ item }) => {
+            return (
+              <>
+                <Card
+                  onpress={() => handlePress(item)}
+                  name={item.user.name}
+                  profilePicture={item.user.avatar}
+                  date={item.createdAt}
+                />
+              
+                <View style={styles.line}>
+                  
+                </View>
+              </>
+            )
+          }}
+          keyExtractor={item => item.id}
+        />
+
+        <TouchableOpacity onPress={() => openBottomSheet()} style={{ backgroundColor: 'transparent', position: 'fixed', alignSelf: 'flex-end', width: 90, height: 90 }}>
+          <Image
+            source={require("../assets/icons/addChart.png")}
+            resizeMode='contentFit'
+            style={{
+              width: 80,
+              height: 80,
+              alignSelf: 'flex-end',
+
+            }}
+
+          />
+        </TouchableOpacity>
+        <BottomSheet
+          index={-1}
+          ref={bottomSheetRef}
+          snapPoints={snapPoints}
+          style={styles.bottomSheet}
+          backdropComponent={renderBackdrop}
+        >
+
+          <BottomSheetView style={styles.bottomOuter}>
+
+            <ScrollView>
+              <FormField
+                title='T0:'
+                value=''
+                handleChangeText={() => { }}
+                style={{
+                  backgroundColor: '#E6E6E6',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  paddingBottom: 10,
+                  color: 'black'
+
+
+                }}
+                inputStyle={{ borderBottomColor: '#E6E6E6' }}
+
+              />
+            </ScrollView>
+          </BottomSheetView>
+        </BottomSheet>
+      </View>
+
+    </SafeAreaView>
   )
 }
 
 export default Home;
 
 const styles = StyleSheet.create({
-container:{
-  flex:1,
-  width:'100%',
-  height:'100%',
+  container: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
 
-  backgroundColor:'#fff',
-},
-line:{
-  width:'100%',
-  height:2,
-  backgroundColor:'grey',
-  opacity:0.1,
-},
+    backgroundColor: '#fff',
+  },
+  line: {
+    width: '100%',
+    height: 2,
+    backgroundColor: 'grey',
+    opacity: 0.1,
+  },
 
 
-topFlatlist:{
-  width:'96%',
-  alignSelf:'center',
-  borderRadius:10,
-  marginTop:20,
-  height:100,
-  borderTopRightRadius:'back',
-  backgroundColor:'#1B0333',
-  
-},
-imgicons:{
+  topFlatlist: {
+    width: '100%',
+    alignSelf: 'center',
 
-},
+    marginTop: 20,
+    height: 100,
+    borderTopRightRadius: 'back',
+    backgroundColor: '#8686DB',
+
+  },
+  imgicons: {
+
+  },
 
 
 })

@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet,Image, TouchableOpacity } from 'react-native';
 
-export const FormField = ({ title, value, handleChangeText, keyboardType, secureTextEntry }) => {
+export const FormField = ({ title, value, handleChangeText, keyboardType, style,inputStyle,inputs }) => {
  const eyeOpen = require('../assets/icons/eye.png');
  const eyeClose = require('../assets/icons/Eyeclose.png');
   const [showPassword,setshowPassword] =useState(false)
   return (
-    <View style={styles.container}>
+    <View style={[style,styles.container]}>
       <Text style={styles.label}>{title}</Text>
-      <View style={styles.inputContainer}>
+      <View style={[inputStyle,styles.inputContainer]}>
       <TextInput
-        style={styles.input}
+        style={[inputs,styles.input]}
         value={value}
         onChangeText={handleChangeText}
         keyboardType={keyboardType}
         secureTextEntry={title==='Password' && !showPassword}
-        placeholder={`Enter your ${title.toLowerCase()}`}
+        placeholder={title}
         placeholderTextColor="#aaa"
 
       />

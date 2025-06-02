@@ -19,9 +19,9 @@ const SignIn = () => {
   const [userId, setUserId]=useState('');
    const auth = FIREBASE_AUTH;
 
-  
+
+
 const handleSubmit = async () => {
-  // Check if both email and password are provided
   if (!form.email || !form.password) {
     Alert.alert('Error', 'Please fill in both email and password.');
     return;
@@ -30,13 +30,13 @@ const handleSubmit = async () => {
   setLoading(true);
 
   try {
-    // Authenticate user with Firebase
+    // Sign in with Firebase
     const userCredential = await signInWithEmailAndPassword(auth, form.email, form.password);
 
-    // Get Firebase ID token
+    // Get token
     const token = await userCredential.user.getIdToken();
 
-    // Make request to your backend to verify/authenticate user
+    // Send token to backend
     const response = await fetch('http://192.168.197.200:8080/api/auth/me', {
       method: 'GET',
       headers: {
@@ -45,24 +45,26 @@ const handleSubmit = async () => {
       },
     });
 
-    // Parse the JSON response (only once!)
-    const data = await response.json();
-  
+    const backendData = await response.json();
+
     if (response.ok) {
-      // Successful login
+      // Build and store user + token data
+      const userDataToStore = {
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
+        displayName: userCredential.user.displayName ?? '',
+        photoURL: userCredential.user.photoURL ?? '',
+        token: token,
+        refreshToken: userCredential.user.refreshToken,
+      };
+
+      await AsyncStorage.setItem('user', JSON.stringify(userDataToStore));
+
+      //console.log(' Stored user in AsyncStorage:', userDataToStore);
+
       Alert.alert('Success', 'Login successful!');
-
-      // Store token locally (optional if you're using Firebase token directly)
-      await AsyncStorage.setItem('token',token);
-
-      // Extract and log user ID
-     // const userID = data.user.user_id;
-      //console.log("user id = ", userID);
-
-      // Navigate to home screen
       router.push('/home');
     } else {
-      // Handle error from server
       const errorText = await response.text();
       const errorMessage = response.headers.get('content-type')?.includes('application/json')
         ? JSON.parse(errorText)?.message
@@ -71,11 +73,9 @@ const handleSubmit = async () => {
       Alert.alert('Error', errorMessage || 'Invalid credentials');
     }
   } catch (error) {
-    // Catch unexpected errors
     console.error('Login error:', error);
     Alert.alert('Error', 'Something went wrong. Please try again later.');
   } finally {
-    // Always stop the loading spinner
     setLoading(false);
   }
 };

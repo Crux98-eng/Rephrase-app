@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -6,31 +6,41 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Image
+  Image,
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Sample chat data initial state
-const initialData = {
-  message_id_1: {
-    sender_user_id: 'unique_firebase_uid_of_user_alice',
-    sender_display_name: 'Alice (the amazing)',
-    message_content: "hi eric how are you!",
-    sent_timestamp_ms: 1700000010000,
-  },
-  message_id_2: {
-    sender_user_id: 'unique_firebase_uid_of_user_alice',
-    sender_display_name: 'Alice (the amazing)',
-    message_content: ' Excited to try this out.',
-    sent_timestamp_ms: 1700000011000,
-  },
-};
+
 
 const ChatScreen = () => {
   // logged in user coming from main screen
-  const { userId, name } = useLocalSearchParams(); 
+  const { userId, name,msg,date,avatar } = useLocalSearchParams(); 
+
+  console.log("avata  ==>",avatar)
+ const [id,setId]=useState('');
+const initialData = {
+  message_id_1: {
+    received_id:userId,
+    sender_display_name: name,
+    message_content: msg,
+    sent_timestamp_ms:date,
+  },
  
+};
+useEffect(()=>{
+ loadUser();
+
+},[])
+ const loadUser = async () => {
+  const userDataString = await AsyncStorage.getItem('user');
+  const user = userDataString ? JSON.parse(userDataString) : null;
+  //console.log("User ===>",user);
+  setId(user.uid)
+};
 
   const [chatMessages, setChatMessages] = useState(initialData);
   const [inputText, setInputText] = useState('');
@@ -48,7 +58,7 @@ const ChatScreen = () => {
 
     const newId = `msg_${Date.now()}`;
     const newMessage = {
-      sender_user_id: userId,
+      sender_user_id: id,
       sender_display_name: name || 'Me',
       message_content: inputText,
       sent_timestamp_ms: Date.now(),
@@ -63,7 +73,7 @@ const ChatScreen = () => {
   };
 
   const renderMessage = ({ item }) => {
-    const isMine = item.sender_user_id === userId;
+    const isMine = item.sender_user_id === id;
 
     return (
       <View style={[styles.messageContainer, isMine ? styles.mine : styles.theirs]}>
@@ -76,7 +86,7 @@ const ChatScreen = () => {
   };
 const handleBack=()=>{
   router.push('/home');
-  console.log("pressed");
+
 }
   return (
  
@@ -93,7 +103,27 @@ const handleBack=()=>{
            resizeMode='contentFit'
           />
         </TouchableOpacity>
-        <Text style={{color:'white',textAlign:'center'}}>{name}</Text>
+        <View style={{
+          backgroundColor:'#8686DB',
+          borderColor:'white',
+          borderWidth:2,
+          width:50,height:50,
+          borderRadius:'50%',
+          alignSelf:'center',
+          marginTop:10,
+          alignItems:'center',
+          }}>
+            
+          <Image 
+          source={{uri:avatar}}
+          resizeMode='contentFit'
+          style={{
+           width:40,
+           height:40
+          }}
+          />
+        </View>
+        <Text style={{color:'white',alignSelf:'center',marginTop:6}}>{name}</Text>
       </View>
       <FlatList
         data={messages}
@@ -102,7 +132,7 @@ const handleBack=()=>{
         contentContainerStyle={styles.chatContainer}
       />
 
-      <View style={styles.inputContainer}>
+      <KeyboardAvoidingView style={styles.inputContainer } behavior={Platform.OS === 'ios' ? 'padding' : undefined} >
         <TextInput
           value={inputText}
           onChangeText={setInputText}
@@ -112,7 +142,7 @@ const handleBack=()=>{
         <TouchableOpacity onPress={handleSend} style={styles.sendButton}>
           <Text style={{ color: 'white' }}>Send</Text>
         </TouchableOpacity>
-      </View>
+      </KeyboardAvoidingView>
     </View>
   );
 };
@@ -128,7 +158,7 @@ const styles = StyleSheet.create({
   backButton:{
     display:'flex',
     position:'absolute',
-    left:20,
+    left:10,
     top:40,
    width:40,
    justifyContent:'center',
@@ -155,6 +185,7 @@ const styles = StyleSheet.create({
     shadowColor:'black',
     justifyContent:'center',
     position:'fixed',
+  
   },
   chatContainer: {
     padding: 12,
