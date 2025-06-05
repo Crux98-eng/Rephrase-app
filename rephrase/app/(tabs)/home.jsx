@@ -3,8 +3,8 @@ import React, { useState, useRef, useMemo, useCallback } from 'react'
 import Card from '../components/card';
 import { router } from 'expo-router';
 import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
-import { BorderlessButton, TextInput } from 'react-native-gesture-handler';
 import { FormField } from '../components/form'
+
 const messages = [
   {
 
@@ -93,7 +93,8 @@ const messages = [
 
 const Home = () => {
   const [name, setName] = useState('')
-
+ 
+  const [serchTerm ,setsearchTerm]= useState('');
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ['1', '20%', '40%', '90%'], []);
   const openBottomSheet = () => {
@@ -113,6 +114,28 @@ const Home = () => {
       },
     });
   };
+ const handleSearch=async()=>{
+  const response = await fetch(`http://192.168.35.200:8080/api/users/search`,
+   {
+    method:'GET',
+    header:{
+      'Content-Type':'pplication/json',
+      body:{
+        'search':setsearchTerm
+      }
+    }
+
+    }
+  );
+  const data = await response.json();
+  if(response.ok){
+    console.log(data);
+  }
+
+ }
+
+
+
   const topHandlePress = (user) => {
     // Encode name and avatar in query params
     //console.log("==============",user)
