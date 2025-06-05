@@ -2,8 +2,9 @@ import { View, Text ,StyleSheet,Image} from 'react-native'
 import React from 'react'
 import { Tabs } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-const ChatLayout = () => {
-    const TabsIcon = ({ icon, color, focused }) => (
+import logo_primary from '../assets/icons/logo_primary.png'
+
+const TabsIcon = ({ icon, color, focused }) => (
     
       <View style={{justifyContent:'center',alignItems:'center'}}>
         <Image
@@ -12,11 +13,13 @@ const ChatLayout = () => {
           style={{
             width: 20,
             height: 20,
-            tintColor: focused ? '#000066' : color,
+            tintColor: '#000066',
           }}
         />
       </View>
     );
+const ChatLayout = () => {
+    
   return (
     <GestureHandlerRootView>
    <Tabs screenOptions={{ 
@@ -27,14 +30,14 @@ const ChatLayout = () => {
     name="chat"
     options={{
       title: 'chatting',
-      tabBarIcon: ({ focused, color }) => (
-        <TabsIcon
-          icon={require('../assets/icons/menu.png')}
-          
-          color={color}
-          focused={focused}
-        />
-      ),
+      headerShown:true,
+           tabBarIcon: ({ focused, color }) => (
+            <TabsIcon
+              icon={logo_primary}
+              color={color}
+              focused={focused}
+            />
+           ),
     }}
   />
 </Tabs>

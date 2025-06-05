@@ -48,7 +48,7 @@ const TabsLayout = () => {
               focused={focused}
             />
           ),
-          headerRight: () => (
+             headerRight: () => (
             <TouchableOpacity
               style={{
                 width: 50,

@@ -22,6 +22,8 @@ const SignIn = () => {
 
 
 const handleSubmit = async () => {
+
+ 
   if (!form.email || !form.password) {
     Alert.alert('Error', 'Please fill in both email and password.');
     return;
@@ -35,18 +37,21 @@ const handleSubmit = async () => {
 
     // Get token
     const token = await userCredential.user.getIdToken();
-
+ console.log("\n\n",token,"\n\n")
     // Send token to backend
-    const response = await fetch('http://192.168.197.200:8080/api/auth/me', {
+    const response = await fetch('http://192.168.35.200:8081/api/auth/me', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
     });
-
+if (contentType && contentType.includes('application/json')) {
     const backendData = await response.json();
-
+}else{
+   const text = await response.text();
+  console.log("typo =>>>>>",text);
+}
     if (response.ok) {
       // Build and store user + token data
       const userDataToStore = {
@@ -108,7 +113,8 @@ const handleSubmit = async () => {
           <CustomButton
           styling={styles.buton}
             title={loading ? 'Logging in...' : 'Login'}
-            onPress={()=>{handleSubmit()}}
+            // onPress={()=>{handleSubmit()}}
+            onPress={()=> router.push('/home')}
             disabled={loading}
           />
 

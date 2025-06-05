@@ -7,6 +7,7 @@ import { BorderlessButton, TextInput } from 'react-native-gesture-handler';
 import { FormField } from '../components/form'
 const messages = [
   {
+
     id: 1,
     text: "Hey, how's it going?",
     createdAt: new Date(),
@@ -136,6 +137,13 @@ const Home = () => {
       />
     ),
     []
+
+
+
+    
+
+
+
   );
 
   return (
