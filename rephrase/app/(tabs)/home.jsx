@@ -114,25 +114,25 @@ const Home = () => {
       },
     });
   };
- const handleSearch=async()=>{
-  const response = await fetch(`http://192.168.35.200:8080/api/users/search`,
-   {
-    method:'GET',
-    header:{
-      'Content-Type':'pplication/json',
-      body:{
-        'search':setsearchTerm
-      }
-    }
+//  const handleSearch=async()=>{
+//   const response = await fetch(`http://192.168.35.200:8080/api/users/search`,
+//    {
+//     method:'GET',
+//     header:{
+//       'Content-Type':'pplication/json',
+//       body:{
+//         'search':setsearchTerm
+//       }
+//     }
 
-    }
-  );
-  const data = await response.json();
-  if(response.ok){
-    console.log(data);
-  }
+//     }
+//   );
+//   const data = await response.json();
+//   if(response.ok){
+//     console.log(data);
+//   }
 
- }
+//  }
 
 
 
@@ -226,7 +226,12 @@ const Home = () => {
           keyExtractor={item => item.id}
         />
 
-        <TouchableOpacity onPress={() => openBottomSheet()} style={{ backgroundColor: 'transparent', position: 'fixed', alignSelf: 'flex-end', width: 90, height: 90 }}>
+        <TouchableOpacity onPress={() => openBottomSheet()}
+         style={{
+         backgroundColor:'none',
+          position: 'fixed',
+           alignSelf: 'flex-end',
+            width: 90, height: 90 }}>
           <Image
             source={require("../assets/icons/addChart.png")}
             resizeMode='contentFit'
@@ -251,9 +256,9 @@ const Home = () => {
 
             <ScrollView>
               <FormField
-                title='T0:'
-                value=''
-                handleChangeText={() => { }}
+                title='search:'
+                value={serchTerm}
+                handleChangeText={(e) => {setsearchTerm(e) }}
                 style={{
                   backgroundColor: '#E6E6E6',
                   justifyContent: 'center',
@@ -266,6 +271,26 @@ const Home = () => {
                 inputStyle={{ borderBottomColor: '#E6E6E6' }}
 
               />
+              <TouchableOpacity
+              onPress={()=>{}}
+              style={{
+                position:'absolute',
+                top:34,
+                right:20,
+                justifyContent:'center',
+                alignSelf:'flex-end',
+                
+              }}>
+                <Image 
+                source={require('../assets/icons/search.png')}
+                style={{
+                  width:30,height:30,
+                  tintColor:'#8686DB'
+                
+                }}
+                
+                />
+              </TouchableOpacity>
             </ScrollView>
           </BottomSheetView>
         </BottomSheet>

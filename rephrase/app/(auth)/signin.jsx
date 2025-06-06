@@ -37,7 +37,7 @@ const handleSubmit = async () => {
 
     // Get token
     const token = await userCredential.user.getIdToken();
- console.log("\n\n",token,"\n\n")
+ //console.log("\n\n",token,"\n\n")
     // Send token to backend
     const response = await fetch('http://192.168.35.200:8080/api/auth/me', {
       method: 'GET',

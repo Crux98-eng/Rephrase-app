@@ -77,7 +77,7 @@ import CustomButton from './components/CustomButton';
 
 const isTokenValid = (token) => {
   try {
-    const decoded= jwtDecode(token);
+    const decoded = jwtDecode(token);
     const currentTime = Date.now() / 1000; // in seconds
     return decoded.exp > currentTime;
   } catch (error) {
@@ -107,7 +107,7 @@ export default function Page() {
         // No valid token found
         router.replace('/signin');
       } catch (error) {
-        console.error('Auth check failed:', error);
+        //console.error('Auth check failed:', error);
         router.replace('/signin');
       } finally {
         setCheckingToken(false);

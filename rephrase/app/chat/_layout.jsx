@@ -27,7 +27,7 @@ const ChatLayout = () => {
     
     }}>
   <Tabs.Screen
-    name="chat"
+    name="[userId]"
     options={{
       title: 'chatting',
       headerShown:true,

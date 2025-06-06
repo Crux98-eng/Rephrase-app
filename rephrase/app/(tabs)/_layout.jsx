@@ -6,16 +6,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FIREBASE_AUTH } from '../../firebase'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Mymodal from '../components/modal';
-const TabsIcon = ({ icon, color, focused }) => (
+const TabsIcon = ({ icon, color, focused,extraStyles }) => (
   <View>
     <Image
       source={icon}
       resizeMode="contain"
-      style={{
+      style={[extraStyles,{
         width: 20,
         height: 20,
         tintColor: focused ? '#000066' : color,
-      }}
+      }]}
     />
   </View>
 );
@@ -54,7 +54,7 @@ const TabsLayout = () => {
                 display: 'flex',
                 flexDirection: 'row',
                 justifyContent: 'center',
-              
+
               }}>
                 <TouchableOpacity style={{
                   width: 50,
@@ -98,14 +98,44 @@ const TabsLayout = () => {
                   />
                 </TouchableOpacity>
                 {modaVisible && (
-                  <View style={{margin:0,padding:0}}>
-                  <Mymodal visible={modaVisible} onClose={() => setModalVisible(false)} />
+                  <View style={{ margin: 0, padding: 0 }}>
+                    <Mymodal visible={modaVisible} onClose={() => setModalVisible(false)} />
                   </View>
                 )}
               </View>
             ),
           }}
         />
+<Tabs.Screen
+          name="friends"
+          options={{
+            title: 'friends',
+            headerShown: true,
+           
+            tabBarIcon: ({ focused, color }) => (
+              <TabsIcon
+                icon={require('../assets/icons/friends.png')}
+                color={color}
+                focused={focused}
+                extraStyles={{with:40,height:40}}
+
+              />
+            ),
+            headerRight:()=>{
+              (
+              <View style={{
+               display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+
+              }}>
+              <Text style={{color:'red'}}>Rephrase App</Text>
+              </View>
+              )
+            }
+            
+          }}
+/>
       </Tabs>
     </GestureHandlerRootView>
   );

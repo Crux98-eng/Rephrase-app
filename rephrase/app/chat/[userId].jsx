@@ -18,29 +18,29 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ChatScreen = () => {
   // logged in user coming from main screen
-  const { userId, name,msg,date,avatar } = useLocalSearchParams(); 
+  const { userId, name, msg, date, avatar } = useLocalSearchParams();
 
-  console.log("avata  ==>",avatar)
- const [id,setId]=useState('');
-const initialData = {
-  message_id_1: {
-    received_id:userId,
-    sender_display_name: name,
-    message_content: msg,
-    sent_timestamp_ms:date,
-  },
- 
-};
-useEffect(()=>{
- loadUser();
+  console.log("avata  ==>", avatar)
+  const [id, setId] = useState('');
+  const initialData = {
+    message_id_1: {
+      received_id: userId,
+      sender_display_name: name,
+      message_content: msg,
+      sent_timestamp_ms: date,
+    },
 
-},[])
- const loadUser = async () => {
-  const userDataString = await AsyncStorage.getItem('user');
-  const user = userDataString ? JSON.parse(userDataString) : null;
-  //console.log("User ===>",user);
-  setId(user.uid)
-};
+  };
+  useEffect(() => {
+    loadUser();
+
+  }, [])
+  const loadUser = async () => {
+    const userDataString = await AsyncStorage.getItem('user');
+    const user = userDataString ? JSON.parse(userDataString) : null;
+    //console.log("User ===>",user);
+    setId(user.uid)
+  };
 
   const [chatMessages, setChatMessages] = useState(initialData);
   const [inputText, setInputText] = useState('');
@@ -67,6 +67,7 @@ useEffect(()=>{
     setChatMessages((prev) => ({
       ...prev,
       [newId]: newMessage,
+     
     }));
 
     setInputText('');
@@ -84,46 +85,46 @@ useEffect(()=>{
       </View>
     );
   };
-const handleBack=()=>{
-  router.push('/home');
+  const handleBack = () => {
+    router.push('/home');
 
-}
+  }
   return (
- 
+
     <View style={styles.container}>
-      <Image 
-      source={require("../assets/icons/chatbg.png")}
-      style={styles.imageBg}
-      
+      <Image
+        source={require("../assets/icons/chatbg.png")}
+        style={styles.imageBg}
+
       />
       <View style={styles.topBar}>
         <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-          <Image 
-          source={require("../assets/icons/left-arrow.png")}
-           resizeMode='contentFit'
+          <Image
+            source={require("../assets/icons/left-arrow.png")}
+            resizeMode='contentFit'
           />
         </TouchableOpacity>
         <View style={{
-          backgroundColor:'#8686DB',
-          borderColor:'white',
-          borderWidth:2,
-          width:50,height:50,
-          borderRadius:'50%',
-          alignSelf:'center',
-          marginTop:10,
-          alignItems:'center',
-          }}>
-            
-          <Image 
-          source={{uri:avatar}}
-          resizeMode='contentFit'
-          style={{
-           width:40,
-           height:40
-          }}
+          backgroundColor: '#8686DB',
+          borderColor: 'white',
+          borderWidth: 2,
+          width: 50, height: 50,
+          borderRadius: '50%',
+          alignSelf: 'center',
+          marginTop: 10,
+          alignItems: 'center',
+        }}>
+
+          <Image
+            source={{ uri: avatar }}
+            resizeMode='contentFit'
+            style={{
+              width: 40,
+              height: 40
+            }}
           />
         </View>
-        <Text style={{color:'white',alignSelf:'center',marginTop:6}}>{name}</Text>
+        <Text style={{ color: 'white', alignSelf: 'center', marginTop: 6 }}>{name}</Text>
       </View>
       <FlatList
         data={messages}
@@ -132,7 +133,7 @@ const handleBack=()=>{
         contentContainerStyle={styles.chatContainer}
       />
 
-      <KeyboardAvoidingView style={styles.inputContainer } behavior={Platform.OS === 'ios' ? 'padding' : undefined} >
+      <KeyboardAvoidingView style={styles.inputContainer} behavior={Platform.OS === 'ios' ? 'padding' : undefined} >
         <TextInput
           value={inputText}
           onChangeText={setInputText}
@@ -153,39 +154,39 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // backgroundColor: '#fff',
-    
+
   },
-  backButton:{
-    display:'flex',
-    position:'absolute',
-    left:10,
-    top:40,
-   width:40,
-   justifyContent:'center',
-   alignContent:'center',
-   height:40,
-  
-   padding:5,
+  backButton: {
+    display: 'flex',
+    position: 'absolute',
+    left: 10,
+    top: 40,
+    width: 40,
+    justifyContent: 'center',
+    alignContent: 'center',
+    height: 40,
+
+    padding: 5,
   },
-  imageBg:{
-   flex:1,
-  
-   justifyContent:'center',
-   width:'100%',
-   height:'100%',
-   position:'absolute'
+  imageBg: {
+    flex: 1,
+
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
+    position: 'absolute'
 
 
   },
-  topBar:{
-    width:'100%',
-    height:100,
-     marginTop:25,
-    backgroundColor:'#1B0333',
-    shadowColor:'black',
-    justifyContent:'center',
-    position:'fixed',
-  
+  topBar: {
+    width: '100%',
+    height: 100,
+    marginTop: 25,
+    backgroundColor: '#1B0333',
+    shadowColor: 'black',
+    justifyContent: 'center',
+    position: 'fixed',
+
   },
   chatContainer: {
     padding: 12,
@@ -244,4 +245,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
- 

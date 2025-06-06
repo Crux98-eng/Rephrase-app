@@ -17,6 +17,7 @@ export const FormField = ({ title, value, handleChangeText, keyboardType, style,
         secureTextEntry={title==='Password' && !showPassword}
         placeholder={title}
         placeholderTextColor="#aaa"
+        
 
       />
      
