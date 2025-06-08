@@ -20,7 +20,7 @@ const ChatScreen = () => {
   // logged in user coming from main screen
   const { userId, name, msg, date, avatar } = useLocalSearchParams();
 
-  console.log("avata  ==>", avatar)
+ // console.log("avata  ==>", avatar)
   const [id, setId] = useState('');
   const initialData = {
     message_id_1: {

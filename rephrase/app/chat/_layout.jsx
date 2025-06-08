@@ -29,8 +29,8 @@ const ChatLayout = () => {
   <Tabs.Screen
     name="[userId]"
     options={{
-      title: 'chatting',
-      headerShown:true,
+      title: 'chat',
+      headerShown:false,
            tabBarIcon: ({ focused, color }) => (
             <TabsIcon
               icon={logo_primary}

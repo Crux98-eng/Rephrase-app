@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
   },
   date:{
  position:'absolute',
+ color:'grey',
  top:40,
  left:60,
 
