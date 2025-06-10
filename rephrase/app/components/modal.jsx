@@ -38,7 +38,7 @@ export default function Mymodal({ visible, onClose }) {
  const requestCameraPermission = async () => {
   try {
     const { status, granted, canAskAgain } = await ImagePicker.getCameraPermissionsAsync();
-    console.log("Permission state:", { status, granted, canAskAgain });
+    //console.log("Permission state:", { status, granted, canAskAgain });
 
     if (status !== 'granted') {
       alert('Sorry, we need camera permissions to make this work!');
@@ -166,6 +166,8 @@ const handleUseCamera = async () => {
                   resizeMode: 'contain',
                   width: 60,
                   height: 60,
+                  borderColor:'white',
+                  borderWidth:2,
                 }}
               />
               <Text style={{
@@ -280,7 +282,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     position: 'absolute',
     top: 160,
-    left: 200,
+    left: '70%',
     zIndex: 1,
     borderRadius: '50%',
     alignItems: 'center',
@@ -290,9 +292,9 @@ const styles = StyleSheet.create({
 
   },
   changingProfile: {
-    width: 300,
+    width: '99%',
     height: 100,
-    backgroundColor: '#E6E6E6',
+    backgroundColor: '#EBF9FF',
     position: 'absolute',
     top: 260,
     alignSelf: 'center',
@@ -314,7 +316,7 @@ const styles = StyleSheet.create({
     marginTop: 12
   },
   infoContainer:{
-    width:300,
+    width:'100%',
     height:160,
     backgroundColor:'#E6E6E6',
     position:'absolute',

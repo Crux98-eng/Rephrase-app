@@ -20,7 +20,7 @@ const ChatScreen = () => {
   // logged in user coming from main screen
   const { userId, name, msg, date, avatar } = useLocalSearchParams();
 
- // console.log("avata  ==>", avatar)
+  // console.log("avata  ==>", avatar)
   const [id, setId] = useState('');
   const initialData = {
     message_id_1: {
@@ -67,7 +67,7 @@ const ChatScreen = () => {
     setChatMessages((prev) => ({
       ...prev,
       [newId]: newMessage,
-     
+
     }));
 
     setInputText('');
@@ -126,14 +126,15 @@ const ChatScreen = () => {
         </View>
         <Text style={{ color: 'white', alignSelf: 'center', marginTop: 6 }}>{name}</Text>
       </View>
+      <KeyboardAvoidingView style={{flex:1}} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <FlatList
         data={messages}
         keyExtractor={(item) => item.id}
         renderItem={renderMessage}
         contentContainerStyle={styles.chatContainer}
       />
-
-      <KeyboardAvoidingView style={styles.inputContainer} behavior={Platform.OS === 'ios' ? 'padding' : undefined} >
+</KeyboardAvoidingView>
+      <View style={styles.inputContainer}  >
         <TextInput
           value={inputText}
           onChangeText={setInputText}
@@ -143,7 +144,8 @@ const ChatScreen = () => {
         <TouchableOpacity onPress={handleSend} style={styles.sendButton}>
           <Text style={{ color: 'white' }}>Send</Text>
         </TouchableOpacity>
-      </KeyboardAvoidingView>
+      </View>
+      
     </View>
   );
 };
