@@ -1,21 +1,41 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import FriendRequest from '../components/friendRequest';
 
 const FriendsSreen = () => {
-    const [showFriends, setShowFriens] = useState(false);
+    const [showFriends, setShowFriens] = useState(true);
+  
+ const handleButton =()=>{
+setShowFriens(false);
+ }
     return (
         <View>
             <View style={styles.buttonContainer}>
                 {/* buttons to decide what to display */}
-                <TouchableOpacity style={ styles.btn1 }>
+                <TouchableOpacity onPress={()=>setShowFriens(true)} style={ styles.btn1 }>
                     <Text>find friends</Text>
                 </TouchableOpacity>
                 
-                <TouchableOpacity style={styles.btn2}>
+                <TouchableOpacity onPress={handleButton} style={styles.btn2}>
                     <Text>Your Friends</Text></TouchableOpacity>
             </View>
             {/* conditonal rendering based on the button */}
-            {showFriends &&{}}
+            {showFriends &&
+               (
+                <View style={styles.findFriend}>
+                <FriendRequest
+                name="Eric"
+                isRequest={true}
+                
+                />
+                <FriendRequest
+                name="Sylus"
+                isRequest={false}
+                
+                />
+                </View>
+               )
+            }
 
         </View>
     )
@@ -47,6 +67,12 @@ buttonContainer:{
   justifyContent:'center',
   alignItems:'center',
   gap:1
+},
+findFriend:{
+    width:'100%',
+    height:'100%',
+    backgroundColor:'#E6E6E6',
+    gap:3,
 },
 
 })

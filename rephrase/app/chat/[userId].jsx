@@ -50,11 +50,12 @@ const ChatScreen = () => {
       id,
       ...msg,
     }));
-    return entries.sort((a, b) => a.sent_timestamp_ms - b.sent_timestamp_ms);
+    //returning a sorted message by date and time-
+ return entries.sort((a, b) => a.sent_timestamp_ms - b.sent_timestamp_ms);
   }, [chatMessages]);
 
   const handleSend = () => {
-    if (!inputText.trim()) return;
+    if (!inputText.trim()) return;//this line avoids sending an empty message
 
     const newId = `msg_${Date.now()}`;
     const newMessage = {
