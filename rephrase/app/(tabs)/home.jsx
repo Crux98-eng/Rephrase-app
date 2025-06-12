@@ -4,6 +4,7 @@ import Card from '../components/card';
 import { router } from 'expo-router';
 import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { FormField } from '../components/form'
+import FriendRequest from '../components/friendRequest';
 
 const messages = [
   {
@@ -93,8 +94,10 @@ const messages = [
 
 const Home = () => {
   const [name, setName] = useState('')
- 
-  const [serchTerm ,setsearchTerm]= useState('');
+ const [findFriend ,setFindFriend]=useState('');
+  const [searchTerm ,setsearchTerm]= useState('');
+  const [isloading ,setIsloading]= useState(false);
+  let user =[];
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ['1', '20%', '40%', '90%'], []);
   const openBottomSheet = () => {
@@ -114,25 +117,32 @@ const Home = () => {
       },
     });
   };
-//  const handleSearch=async()=>{
-//   const response = await fetch(`http://192.168.35.200:8080/api/users/search`,
-//    {
-//     method:'GET',
-//     header:{
-//       'Content-Type':'pplication/json',
-//       body:{
-//         'search':setsearchTerm
-//       }
-//     }
+ const handleSearch=async()=>{
 
-//     }
-//   );
-//   const data = await response.json();
-//   if(response.ok){
-//     console.log(data);
-//   }
-
-//  }
+  if(!searchTerm.trim()) return
+  try{
+//console.log("text now ==>",serchTerm);
+  setIsloading(true)
+  const response = await fetch(`http://192.168.35.200:8080/api/public/users/search?q=${searchTerm}`);
+  const data = await response.json();
+  if(response.ok){
+    //setFindFriend(data);
+    user ={
+      "name":data.fullName,
+      "id":data.document_Id
+    }
+    
+    //console.log(data);
+  }
+  }catch(error){
+    console.log(error)
+  }
+  finally{
+  setsearchTerm('');
+  setIsloading(false);
+  }
+  
+ }
 
 
 
@@ -158,16 +168,7 @@ const Home = () => {
         pressBehavior="close"     // Closes sheet when tapping backdrop
         opacity={0.7}             // Darkness level
       />
-    ),
-    []
-
-
-
-    
-
-
-
-  );
+    ),[]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#ffff' }}>
@@ -256,8 +257,8 @@ const Home = () => {
 
             <ScrollView>
               <FormField
-                title='search:'
-                value={serchTerm}
+                title='search'
+                value={searchTerm}
                 handleChangeText={(e) => {setsearchTerm(e) }}
                 style={{
                   backgroundColor: '#E6E6E6',
@@ -272,13 +273,19 @@ const Home = () => {
 
               />
               <TouchableOpacity
-              onPress={()=>{}}
+              onPress={handleSearch}
               style={{
                 position:'absolute',
                 top:34,
-                right:20,
+                right:'8%',
                 justifyContent:'center',
                 alignSelf:'flex-end',
+                
+                width:50,
+                height:'contentFit',
+                justifyContent:'center',
+                alignItems:'center',
+
                 
               }}>
                 <Image 
@@ -291,6 +298,17 @@ const Home = () => {
                 
                 />
               </TouchableOpacity>
+                {console.log("hit this line")}
+                {!isloading && findFriend.length>0 &&(
+                  <View style={{width:300,height:100,backgroundColor:'red'}}>
+                  <FriendRequest
+                  name={user.fullName}
+                  isRequest={false}
+              />
+              </View>
+                )}
+              
+             
             </ScrollView>
           </BottomSheetView>
         </BottomSheet>
