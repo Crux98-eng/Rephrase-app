@@ -121,19 +121,18 @@ const TabsLayout = () => {
 
               />
             ),
-            headerRight:()=>{
-              (
-              <View style={{
-               display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-
-              }}>
-              <Text style={{color:'red'}}>Rephrase App</Text>
-              </View>
-              )
-            }
+            headerSearchBarOptions:{
+             headerIconColor:'#8686DB',
+              placeholder:'Seach for a friend'
+            },
+            headerStyle:{
+              backgroundColor:'#8686DB',
+              alignItems:'center',
+              
+            },
             
+        
+            headerTintColor:'white',
           }}
 />
       </Tabs>

@@ -29,7 +29,7 @@ const SignUp = () => {
     const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
     const token = await userCredential.user.getIdToken();
     // console.log('                 \n',token,'\n           ');
-    const response = await fetch('http://192.168.35.200:8081/api/auth/register', {
+    const response = await fetch('http://192.168.253.200:8080/api/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

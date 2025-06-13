@@ -1,10 +1,24 @@
-import { StyleSheet, Image, Text, View, FlatList, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useState, useRef, useMemo, useCallback } from 'react'
+
+import {
+  StyleSheet,
+  Image,
+  Text,
+  View,
+  FlatList,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator
+} from 'react-native';
+import React, { useState, useRef, useMemo, useCallback } from 'react';
 import Card from '../components/card';
 import { router } from 'expo-router';
 import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
-import { FormField } from '../components/form'
+import { FormField } from '../components/form';
 import FriendRequest from '../components/friendRequest';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 
 const messages = [
   {
@@ -25,7 +39,7 @@ const messages = [
     user: {
       _id: 2,
       name: "Bob",
-       avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
+      avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
     },
   },
   {
@@ -45,7 +59,7 @@ const messages = [
     user: {
       _id: 4,
       name: "Harry",
-       avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
+      avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
     },
   },
   {
@@ -65,7 +79,7 @@ const messages = [
     user: {
       _id: 6,
       name: "Bob",
-       avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
+      avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
     },
   },
   {
@@ -93,158 +107,136 @@ const messages = [
 
 
 const Home = () => {
-  const [name, setName] = useState('')
- const [findFriend ,setFindFriend]=useState('');
-  const [searchTerm ,setsearchTerm]= useState('');
-  const [isloading ,setIsloading]= useState(false);
-  let user =[];
-  const bottomSheetRef = useRef(null);
-  const snapPoints = useMemo(() => ['1', '20%', '40%', '90%'], []);
-  const openBottomSheet = () => {
-    if (bottomSheetRef.current) bottomSheetRef.current.expand();
-  };
-  const handlePress = (user) => {
-    // Encode name and avatar in query params
-
-   // console.log("==============", user.user.avatar)
-    router.push({
-      pathname: `/chat/${user.id}`,
-      params: {
-        name: user.user.name,
-        avatar: user.user.avatar,
-        msg:user.text,
-        date:user.createdAt
-      },
-    });
-  };
- const handleSearch=async()=>{
-
-  if(!searchTerm.trim()) return
-  try{
-//console.log("text now ==>",serchTerm);
-  setIsloading(true)
-  const response = await fetch(`http://192.168.35.200:8080/api/public/users/search?q=${searchTerm}`);
-  const data = await response.json();
-  if(response.ok){
-    //setFindFriend(data);
-    user ={
-      "name":data.fullName,
-      "id":data.document_Id
-    }
-    
-    //console.log(data);
-  }
-  }catch(error){
-    console.log(error)
-  }
-  finally{
-  setsearchTerm('');
-  setIsloading(false);
-  }
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [foundUser, setFoundUser] = useState(null);
   
- }
+  const bottomSheetRef = useRef(null);
+  const snapPoints = useMemo(() => ['1%', '20%', '40%', '90%'], []);
 
+  const openBottomSheet = () => {
+    bottomSheetRef.current?.expand();
+  };
 
-
-  const topHandlePress = (user) => {
-    // Encode name and avatar in query params
-    //console.log("==============",user)
+  const handlePress = (user) => {
     router.push({
       pathname: `/chat/${user.id}`,
       params: {
         name: user.user.name,
         avatar: user.user.avatar,
-        msg:user.text,
-        date:user.createdAt
+        msg: user.text,
+        date: user.createdAt,
       },
     });
   };
-  const renderBackdrop = useCallback(
-    (props) => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}    // Fully disappears when sheet is closed
-        appearsOnIndex={0}        // Appears as soon as sheet is opened
-        pressBehavior="close"     // Closes sheet when tapping backdrop
-        opacity={0.7}             // Darkness level
-      />
-    ),[]);
+
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) return;
+    setIsLoading(true);
+    try {
+      const response = await fetch(`http://192.168.253.200:8080/api/public/users/search?q=${searchTerm}`);
+      if (!response.ok) throw new Error('Search failed');
+      const data = await response.json();
+      setFoundUser(data);
+    } catch (error) {
+      console.error('Search error:', error);
+    } finally {
+      setIsLoading(false);
+      setSearchTerm('');
+    }
+  };
+
+  const renderBackdrop = useCallback((props) => (
+    <BottomSheetBackdrop
+      {...props}
+      disappearsOnIndex={-1}
+      appearsOnIndex={0}
+      pressBehavior="close"
+      opacity={0.7}
+    />
+  ), []);
+  const SendRequest = async () => {
+
+    try {
+      setIsLoading(true);
+      //console.log("\n\nid => ",foundUser.document_Id,"\n\n")
+      const userString = await AsyncStorage.getItem('user');
+      const user = await JSON.parse(userString);
+      const token = user.token;
+      // console.log("Token \n =>",token)
+      const response = await fetch(`http://192.168.253.200:8080/api/friends/requests?recipientId=${foundUser.document_Id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // console.log("\n\nreturned data  =",data);
+      if (response.ok) {
+        alert("Request sent successfully");
+        //const data = await response.json();
+
+        setFoundUser(null);
+      } else {
+        //console.log("Server responded with error:", response);
+       // alert("Failed to send request: " + (data.message || 'Unknown error'));
+      }
+
+    } catch (error) {
+      //console.error("Request failed:", error);
+      alert("Something went wrong while sending the request.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#ffff' }}>
-
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.topFlatlist}>
         <FlatList
-
           data={messages}
-          renderItem={({ item }) => {
-            return (
-              <View style={[styles.imgicons, { display: 'flex', alignItems: 'start', marginTop: 20 }]}>
-                <TouchableOpacity onPress={()=>topHandlePress(item)}>
-                <Image
-                  source={{uri:item.user.avatar}}
-                  style={{
-                    width: 50, height: 50,
-                    resizeMode: 'contain',
-                    backgroundColor: 'white',
-                    borderRadius: 50,
-                    marginLeft: 20,
-
-                  }}
-
-                />
-                </TouchableOpacity>
-                <Text style={{ marginLeft: 30, marginTop: 5, color: 'white' }}>{item.user.name}</Text>
-              </View>
-            )
-
-          }}
           horizontal
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={[styles.imgicons, { marginTop: 20, alignItems: 'flex-start' }]}>
+              <TouchableOpacity onPress={() => handlePress(item)}>
+                <Image
+                  source={{ uri: item.user.avatar }}
+                  style={styles.avatar}
+                />
+              </TouchableOpacity>
+              <Text style={styles.topListName}>{item.user.name}</Text>
+            </View>
+          )}
         />
       </View>
-      <View style={styles.container}>
- 
 
+      <View style={styles.container}>
         <FlatList
           data={messages}
-          renderItem={({ item }) => {
-            return (
-              <>
-                <Card
-                  onpress={() => handlePress(item)}
-                  name={item.user.name}
-                  profilePicture={item.user.avatar}
-                  date={item.createdAt}
-                />
-              
-                <View style={styles.line}>
-                  
-                </View>
-              </>
-            )
-          }}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <>
+              <Card
+                onpress={() => handlePress(item)}
+                name={item.user.name}
+                profilePicture={item.user.avatar}
+                date={item.createdAt}
+              />
+              <View style={styles.line} />
+            </>
+          )}
         />
 
-        <TouchableOpacity onPress={() => openBottomSheet()}
-         style={{
-         backgroundColor:'none',
-          position: 'fixed',
-           alignSelf: 'flex-end',
-            width: 90, height: 90 }}>
+        <TouchableOpacity onPress={openBottomSheet} style={styles.fabButton}>
           <Image
             source={require("../assets/icons/addChart.png")}
-            resizeMode='contentFit'
-            style={{
-              width: 80,
-              height: 80,
-              alignSelf: 'flex-end',
-
-            }}
-
+            resizeMode='contain'
+            style={styles.fabIcon}
           />
         </TouchableOpacity>
+
         <BottomSheet
           index={-1}
           ref={bottomSheetRef}
@@ -252,71 +244,42 @@ const Home = () => {
           style={styles.bottomSheet}
           backdropComponent={renderBackdrop}
         >
-
           <BottomSheetView style={styles.bottomOuter}>
-
             <ScrollView>
               <FormField
                 title='search'
                 value={searchTerm}
-                handleChangeText={(e) => {setsearchTerm(e) }}
-                style={{
-                  backgroundColor: '#E6E6E6',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  paddingBottom: 10,
-                  color: 'black'
-
-
-                }}
+                handleChangeText={(e) => setSearchTerm(e)}
+                style={styles.searchField}
                 inputStyle={{ borderBottomColor: '#E6E6E6' }}
-
               />
-              <TouchableOpacity
-              onPress={handleSearch}
-              style={{
-                position:'absolute',
-                top:34,
-                right:'8%',
-                justifyContent:'center',
-                alignSelf:'flex-end',
-                
-                width:50,
-                height:'contentFit',
-                justifyContent:'center',
-                alignItems:'center',
-
-                
-              }}>
-                <Image 
-                source={require('../assets/icons/search.png')}
-                style={{
-                  width:30,height:30,
-                  tintColor:'#8686DB'
-                
-                }}
-                
+              <TouchableOpacity onPress={handleSearch} style={styles.searchIconWrapper}>
+                <Image
+                  source={require('../assets/icons/search.png')}
+                  style={styles.searchIcon}
                 />
               </TouchableOpacity>
-                {console.log("hit this line")}
-                {!isloading && findFriend.length>0 &&(
-                  <View style={{width:300,height:100,backgroundColor:'red'}}>
+
+              {isLoading && <ActivityIndicator size="large" color="#8686DB" style={{ marginTop: 20 }} />}
+
+              {foundUser && (
+                <View style={{ width: '100%', marginTop: 20 }}>
                   <FriendRequest
-                  name={user.fullName}
-                  isRequest={false}
-              />
-              </View>
-                )}
-              
-             
+                    addRequest={() => SendRequest()}
+                    removeRequest={() => setFoundUser(null)}
+                    name={foundUser.fullName}
+                    isRequest={false}
+                    profile={foundUser.profilePictureUrl || 'https://api.dicebear.com/9.x/lorelei/png'}
+                  />
+                </View>
+              )}
             </ScrollView>
           </BottomSheetView>
         </BottomSheet>
       </View>
-
     </SafeAreaView>
-  )
-}
+  );
+};
 
 export default Home;
 
@@ -325,7 +288,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-
     backgroundColor: '#fff',
   },
   line: {
@@ -334,21 +296,58 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
     opacity: 0.1,
   },
-
-
   topFlatlist: {
     width: '100%',
     alignSelf: 'center',
-
     marginTop: 20,
     height: 100,
-    borderTopRightRadius: 'back',
     backgroundColor: '#8686DB',
-
   },
   imgicons: {
-
+    alignItems: 'center',
+    paddingHorizontal: 10,
   },
-
-
-})
+  avatar: {
+    width: 50,
+    height: 50,
+    resizeMode: 'contain',
+    backgroundColor: 'white',
+    borderRadius: 25,
+    marginLeft: 20,
+  },
+  topListName: {
+    marginLeft: 30,
+    marginTop: 5,
+    color: 'white',
+  },
+  fabButton: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
+  },
+  fabIcon: {
+    width: 80,
+    height: 80,
+    alignSelf: 'flex-end',
+  },
+  searchField: {
+    backgroundColor: '#E6E6E6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 10,
+    color: 'black',
+  },
+  searchIconWrapper: {
+    position: 'absolute',
+    top: 34,
+    right: '8%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 50,
+  },
+  searchIcon: {
+    width: 30,
+    height: 30,
+    tintColor: '#8686DB',
+  },
+});
