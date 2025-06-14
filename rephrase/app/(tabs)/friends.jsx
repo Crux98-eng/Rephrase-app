@@ -1,9 +1,10 @@
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Image, FlatList } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Image, FlatList, ScrollView } from 'react-native'
+import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react'
 import FriendRequest from '../components/friendRequest';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { error } from 'react-native-gifted-chat/lib/utils';
 import MyFriends from '../components/myFriends';
+import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 
 const FriendsSreen = () => {
   const [showFriends, setShowFriens] = useState(true);
@@ -11,14 +12,27 @@ const FriendsSreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [friends, setFriends] = useState([]);
   const [token, setToken] = useState('');
+  const [currentUser, setCurrentUser] = useState([]);
+  const [foundUser, setFoundUser] = useState(null);
   const handleButton = () => {
     setShowFriens(false);
     getRequests();
-     getFriends();
+    getFriends();
   }
 
+  const renderBackdrop = useCallback((props) => (
+    <BottomSheetBackdrop
+      {...props}
+      disappearsOnIndex={-1}
+      appearsOnIndex={0}
+      pressBehavior="close"
+      opacity={0.7}
+    />
+  ), []);
+
+
   useEffect(() => {
-     getToken();
+    getToken();
     getRequests();
     getFriends();
   }, []);
@@ -28,6 +42,21 @@ const FriendsSreen = () => {
     const Token = user.token;
     setToken(Token);
   }
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) return;
+    setIsLoading(true);
+    try {
+      const response = await fetch(`http://192.168.253.200:8080/api/public/users/search?q=${searchTerm}`);
+      if (!response.ok) throw new Error('Search failed');
+      const data = await response.json();
+      setFoundUser(data);
+    } catch (error) {
+      console.error('Search error:', error);
+    } finally {
+      setIsLoading(false);
+      setSearchTerm('');
+    }
+  };
   //hundling request
   const getRequests = async () => {
 
@@ -128,6 +157,15 @@ const FriendsSreen = () => {
       setIsLoading(false);
     }
   }
+  const bottomSheetRef = useRef(null);
+  const snapPoints = useMemo(() => ['1%', '20%', '40%', '90%'], []);
+
+  const openBottomSheet = (user) => {
+    console.log("User ==>", user);
+    setCurrentUser(user);
+    bottomSheetRef.current?.expand();
+  };
+
   return (
     <View>
       <View style={styles.buttonContainer}>
@@ -136,7 +174,7 @@ const FriendsSreen = () => {
           <Text>find friends</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={()=>handleButton()} style={styles.btn2}>
+        <TouchableOpacity onPress={() => handleButton()} style={styles.btn2}>
           <Text>Your Friends</Text></TouchableOpacity>
       </View>
       {/* conditonal rendering based on the button */}
@@ -146,7 +184,7 @@ const FriendsSreen = () => {
             {isRequests.map((user) => (
 
               <View key={user.document_Id}>
-                
+
                 <FriendRequest
                   name={user.fullName}
                   confirmRequest={() => { confirmRequest(user.document_Id) }}
@@ -187,26 +225,50 @@ const FriendsSreen = () => {
         )
       }
       {!showFriends && (
-        
-          <FlatList
-            data={friends}
 
-            keyExtractor={(item) => item.document_Id.toString()}
-            renderItem={({ item }) => (
-             
-              <MyFriends
-                name={item.fullName}
-                profilePic={item.profilePictureUrl}
+        <FlatList
+          data={friends}
 
-              />
-             
-              
-            )}
-          />
+          keyExtractor={(item) => item.document_Id.toString()}
+          renderItem={({ item }) => (
 
-       
+            <MyFriends
+              pressed={() => openBottomSheet(item)}
+              name={item.fullName}
+              profilePic={item.profilePictureUrl}
+
+            />
+
+
+          )}
+        />
+
+
       )
       }
+      <BottomSheet
+        index={-1}
+        ref={bottomSheetRef}
+        snapPoints={snapPoints}
+        style={styles.bottomSheet}
+        backdropComponent={renderBackdrop}
+      >
+        <BottomSheetView style={styles.bottomOuter}>
+          <ScrollView>
+            <View style={styles.userProfile}>
+              <Image
+                style={{ width: 150, height: 150 }}
+                source={currentUser.profilePictureUrl ? { uri: profilePictureUrl } : require('../assets/icons/profile.png')}
+              />
+            </View>
+            <Text style={{ fontSize: 18, color: 'grey', marginLeft: 40, marginTop: 10 }} >Name  :<Text style={{ color: 'blue' }}> {currentUser.fullName}</Text></Text>
+            <Text style={{ fontSize: 18, color: 'grey', marginLeft: 40, marginTop: 10 }} >Email : <Text style={{ color: 'blue' }}>{currentUser.emailAddress}</Text></Text>
+            <Text style={{ fontSize: 18, color: 'grey', marginLeft: 40, marginTop: 10 }} >Phone : <Text style={{ color: 'blue' }}>{currentUser.phoneNumber}</Text></Text>
+
+
+          </ScrollView>
+        </BottomSheetView>
+      </BottomSheet>
     </View>
   )
 }
@@ -249,6 +311,16 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#E6E6E6',
     gap: 3,
+
+  },
+  userProfile: {
+    width: '90%',
+    height: 200,
+    backgroundColor: '#E6E6E6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    borderRadius: 20,
 
   },
 

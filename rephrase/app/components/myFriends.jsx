@@ -1,17 +1,17 @@
 import { StyleSheet, Text, TouchableOpacity, View,Image } from 'react-native'
 import React from 'react'
 
-const MyFriends = ({name,profilePic}) => {
+const MyFriends = ({name,profilePic,pressed}) => {
   return (
     <View style={styles.continer}>
-        <TouchableOpacity style={styles.touchables}>
+        <TouchableOpacity onPress={pressed} style={styles.touchables}>
             
             <Image
             source={profilePic? {uri:profilePic}:require('../assets/icons/profile.png')}
             style={{width:45, height:45,marginTop:16}}
             />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.names}>
+            <TouchableOpacity onPress={pressed} style={styles.names}>
             <Text style={{fontSize:18,}}>{name ? name : "User"}</Text>
         </TouchableOpacity>
        <Text style={{
