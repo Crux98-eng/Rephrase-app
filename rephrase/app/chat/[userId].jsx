@@ -8,7 +8,8 @@ import {
   View,
   Image,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  ActivityIndicator
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,24 +19,26 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ChatScreen = () => {
   // logged in user coming from main screen
-  const { userId, name, msg, date, avatar } = useLocalSearchParams();
+  const { userId, name } = useLocalSearchParams();
 
-  // console.log("avata  ==>", avatar)
   const [id, setId] = useState('');
+  const [isLoading,setIsLoading]=useState(false);
   const initialData = {
     message_id_1: {
       received_id: userId,
       sender_display_name: name,
-      message_content: msg,
-      sent_timestamp_ms: date,
+
     },
 
   };
   useEffect(() => {
     loadUser();
+    getMessages();
 
   }, [])
+
   const loadUser = async () => {
+
     const userDataString = await AsyncStorage.getItem('user');
     const user = userDataString ? JSON.parse(userDataString) : null;
     //console.log("User ===>",user);
@@ -51,29 +54,80 @@ const ChatScreen = () => {
       ...msg,
     }));
     //returning a sorted message by date and time-
- return entries.sort((a, b) => a.sent_timestamp_ms - b.sent_timestamp_ms);
+    return entries.sort((a, b) => a.sent_timestamp_ms - b.sent_timestamp_ms);
   }, [chatMessages]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!inputText.trim()) return;//this line avoids sending an empty message
+    const userData = await AsyncStorage.getItem('user');
+    const user = await JSON.parse(userData);
+    const token = user.token;
+    try {
+      setIsLoading(true);
+      const response = await fetch('http://192.168.253.200:8080/api/chat/messages/text', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          'receiverId': userId,
+          'senderId': id,
+          'text': inputText,
+        })
+      })
 
-    const newId = `msg_${Date.now()}`;
-    const newMessage = {
-      sender_user_id: id,
-      sender_display_name: name || 'Me',
-      message_content: inputText,
-      sent_timestamp_ms: Date.now(),
-    };
+      const newId = `msg_${Date.now()}`;
+      const newMessage = {
+        sender_user_id: id,
+        sender_display_name: name || 'Me',
+        message_content: inputText,
+        sent_timestamp_ms: Date.now(),
+      };
 
-    setChatMessages((prev) => ({
-      ...prev,
-      [newId]: newMessage,
+      setChatMessages((prev) => ({
+        ...prev,
+        [newId]: newMessage,
 
-    }));
+      }));
+      if (response.ok) {
+        alert("message sent");
+      } else {
+        console.log("message not send");
+      }
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setInputText('');
+      setIsLoading(false);
+    }
 
-    setInputText('');
-  };
+  }
 
+  const getMessages = async()=>{
+   try{
+    setIsLoading(true)
+    const userData = await AsyncStorage.getItem('user');
+    const user = await JSON.parse(userData);
+    const token = user.token;
+    const response =await fetch(`http://192.168.253.200:8080/api/chat/messages/history/${id}/${userId}`,{
+      method:'GET',
+      headers:{
+        'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+      }
+    })
+   if(response.ok){
+    const data =await response.json();
+    console.log("messages===>",data);
+   }
+   }catch(err){
+     console.log("some error");
+   }finally{
+setIsLoading(false)
+   }
+
+  }
   const renderMessage = ({ item }) => {
     const isMine = item.sender_user_id === id;
 
@@ -114,27 +168,29 @@ const ChatScreen = () => {
           alignSelf: 'center',
           marginTop: 10,
           alignItems: 'center',
+          overflow: 'hidden',
         }}>
 
           <Image
-            source={{ uri: avatar }}
+            source={require('../assets/icons/profile.png')}
             resizeMode='contentFit'
             style={{
               width: 40,
-              height: 40
+              height: 40,
+              marginTop: 5,
             }}
           />
         </View>
         <Text style={{ color: 'white', alignSelf: 'center', marginTop: 6 }}>{name}</Text>
       </View>
-      <KeyboardAvoidingView style={{flex:1}} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <FlatList
-        data={messages}
-        keyExtractor={(item) => item.id}
-        renderItem={renderMessage}
-        contentContainerStyle={styles.chatContainer}
-      />
-</KeyboardAvoidingView>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <FlatList
+          data={messages}
+          keyExtractor={(item) => item.id}
+          renderItem={renderMessage}
+          contentContainerStyle={styles.chatContainer}
+        />
+      </KeyboardAvoidingView>
       <View style={styles.inputContainer}  >
         <TextInput
           value={inputText}
@@ -146,7 +202,30 @@ const ChatScreen = () => {
           <Text style={{ color: 'white' }}>Send</Text>
         </TouchableOpacity>
       </View>
-      
+{isLoading &&
+              <View style={{
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+                backgroundColor: 'white',
+
+              }}>
+                <Image
+                  source={require('../assets/icons/loading-bg.png')}
+                  style={{ width: '100%', height: '100%' }}
+                />
+                <ActivityIndicator
+                  size="large"
+                  color="#8686DB"
+                  style={{
+                    marginTop: 20,
+                    transform: [{ scale: 2 }],
+                    width: '100%',
+                    height: '100%',
+                    position: 'absolute',
+                  }} />
+
+              </View>}
     </View>
   );
 };

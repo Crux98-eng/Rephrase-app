@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   ActivityIndicator
 } from 'react-native';
-import React, { useState, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import Card from '../components/card';
 import { router } from 'expo-router';
 import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
@@ -110,7 +110,7 @@ const Home = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [foundUser, setFoundUser] = useState(null);
-  
+  const [friends,setFriends] = useState([]);
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ['1%', '20%', '40%', '90%'], []);
 
@@ -120,15 +120,17 @@ const Home = () => {
 
   const handlePress = (user) => {
     router.push({
-      pathname: `/chat/${user.id}`,
+      pathname: `/chat/${user.document_Id}`,
       params: {
-        name: user.user.name,
-        avatar: user.user.avatar,
-        msg: user.text,
-        date: user.createdAt,
+        name: user.fullName,
+        
       },
+
     });
   };
+  useEffect(()=>{
+  getFriends();
+  },[friends.length])
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) return;
@@ -190,23 +192,49 @@ const Home = () => {
       setIsLoading(false);
     }
   };
+const getFriends = async () => {
+    try {
+      setIsLoading(true);
+      const userString = await AsyncStorage.getItem('user');
+      const user = await JSON.parse(userString);
+      const token = user.token;
+      const response = await fetch('http://192.168.253.200:8080/api/friends', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        }
+      })
+      if (response.ok) {
+        const data = await response.json();
+       // console.log("returned data =>>",data);
+        setFriends(data);
+      } else {
+        console.log("bad request");
+      }
 
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.topFlatlist}>
         <FlatList
-          data={messages}
+          data={friends}
           horizontal
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.document_Id.toString()}
           renderItem={({ item }) => (
             <View style={[styles.imgicons, { marginTop: 20, alignItems: 'flex-start' }]}>
               <TouchableOpacity onPress={() => handlePress(item)}>
                 <Image
-                  source={{ uri: item.user.avatar }}
+                  source={item.profilePictureUrl?{ uri: item.profilePictureUrl }:require('../assets/icons/profile.png')}
                   style={styles.avatar}
                 />
               </TouchableOpacity>
-              <Text style={styles.topListName}>{item.user.name}</Text>
+              <Text style={styles.topListName}>{item.fullName}</Text>
             </View>
           )}
         />
@@ -214,15 +242,15 @@ const Home = () => {
 
       <View style={styles.container}>
         <FlatList
-          data={messages}
-          keyExtractor={(item) => item.id.toString()}
+          data={friends}
+          keyExtractor={(item) => item.document_Id.toString()}
           renderItem={({ item }) => (
             <>
               <Card
                 onpress={() => handlePress(item)}
-                name={item.user.name}
-                profilePicture={item.user.avatar}
-                date={item.createdAt}
+                name={item.fullName}
+                profilePicture={item.profilePictureUrl}
+               
               />
               <View style={styles.line} />
             </>
@@ -276,6 +304,30 @@ const Home = () => {
             </ScrollView>
           </BottomSheetView>
         </BottomSheet>
+        {isLoading &&
+                      <View style={{
+                        width: '100%',
+                        height: '100%',
+                        position: 'absolute',
+                        backgroundColor: 'white',
+        
+                      }}>
+                        <Image
+                          source={require('../assets/icons/loading-bg.png')}
+                          style={{ width: '100%', height: '100%' }}
+                        />
+                        <ActivityIndicator
+                          size="large"
+                          color="#8686DB"
+                          style={{
+                            marginTop: 20,
+                            transform: [{ scale: 2 }],
+                            width: '100%',
+                            height: '100%',
+                            position: 'absolute',
+                          }} />
+        
+                      </View>}
       </View>
     </SafeAreaView>
   );
@@ -299,7 +351,7 @@ const styles = StyleSheet.create({
   topFlatlist: {
     width: '100%',
     alignSelf: 'center',
-    marginTop: 20,
+    marginTop: 0,
     height: 100,
     backgroundColor: '#8686DB',
   },
