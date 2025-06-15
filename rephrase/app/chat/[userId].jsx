@@ -21,7 +21,7 @@ const ChatScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [chatMessages, setChatMessages] = useState([]);
   const [inputText, setInputText] = useState('');
-
+    const url = 'https://rephrase-chatapi.onrender.com'
   useEffect(() => {
     loadUser();
     getMessages();
@@ -39,7 +39,7 @@ const ChatScreen = () => {
       const userData = await AsyncStorage.getItem('user');
       const user = JSON.parse(userData);
       const token = user.token;
-      const response = await fetch(`http://192.168.253.200:8080/api/chat/messages/${userId}`, {
+      const response = await fetch(`${url}/api/chat/messages/${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ const ChatScreen = () => {
     const token = user.token;
     try {
       setIsLoading(true);
-      const response = await fetch('http://192.168.253.200:8080/api/chat/messages/text', {
+      const response = await fetch(`${url}/api/chat/messages/text`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

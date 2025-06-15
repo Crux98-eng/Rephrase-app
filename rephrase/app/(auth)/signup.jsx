@@ -16,6 +16,7 @@ const auth =  FIREBASE_AUTH ;
 const SignUp = () => {
   const [form, setForm] = useState({ email: '', password: '',name:'',phone:'' });
   const [loading, setLoading] = useState(false);
+  const url = 'https://rephrase-chatapi.onrender.com'
 
   const handleSubmit = async () => {
   if (!form.email || !form.password ||!form.name || !form.phone) {
@@ -29,7 +30,7 @@ const SignUp = () => {
     const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
     const token = await userCredential.user.getIdToken();
     // console.log('                 \n',token,'\n           ');
-    const response = await fetch('http://192.168.253.200:8080/api/auth/register', {
+    const response = await fetch(`${url}/api/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -37,6 +38,7 @@ const SignUp = () => {
       },
       body: JSON.stringify({
       fullName:form.name,
+      phoneNumber:form.phone,
    
       }),
     });

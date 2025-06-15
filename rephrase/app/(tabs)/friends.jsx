@@ -7,6 +7,7 @@ import MyFriends from '../components/myFriends';
 import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 
 const FriendsSreen = () => {
+  const url = 'https://rephrase-chatapi.onrender.com';
   const [showFriends, setShowFriens] = useState(true);
   const [isRequests, setRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +47,7 @@ const FriendsSreen = () => {
     if (!searchTerm.trim()) return;
     setIsLoading(true);
     try {
-      const response = await fetch(`http://192.168.253.200:8080/api/public/users/search?q=${searchTerm}`);
+      const response = await fetch(`${url}/api/public/users/search?q=${searchTerm}`);
       if (!response.ok) throw new Error('Search failed');
       const data = await response.json();
       setFoundUser(data);
@@ -67,7 +68,7 @@ const FriendsSreen = () => {
       const user = await JSON.parse(userString);
       const token = user.token;
       // console.log("Token \n =>",token)
-      const response = await fetch(`http://192.168.253.200:8080/api/friends/requests/pending`, {
+      const response = await fetch(`${url}/api/friends/requests/pending`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -104,7 +105,7 @@ const FriendsSreen = () => {
     try {
       setIsLoading(true);
 
-      const response = await fetch(`http://192.168.253.200:8080/api/friends/requests/${document_Id}`, {
+      const response = await fetch(`${url}/api/friends/requests/${document_Id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -136,7 +137,7 @@ const FriendsSreen = () => {
   const getFriends = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('http://192.168.253.200:8080/api/friends', {
+      const response = await fetch(`${url}/api/friends`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

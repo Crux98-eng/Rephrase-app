@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const SignIn = () => {
+  const url = 'https://rephrase-chatapi.onrender.com'
 
   const [form, setForm] = useState({ email: '', password: '' });
     
@@ -39,7 +40,7 @@ const handleSubmit = async () => {
     const token = await userCredential.user.getIdToken();
  console.log("\n\n",token,"\n\n")
     // Send token to backend
-    const response = await fetch('http://192.168.253.200:8080/api/auth/me', {
+    const response = await fetch(`${url}/api/auth/me`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

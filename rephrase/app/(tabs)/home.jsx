@@ -113,6 +113,7 @@ const Home = () => {
   const [friends,setFriends] = useState([]);
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ['1%', '20%', '40%', '90%'], []);
+  const url = 'https://rephrase-chatapi.onrender.com'
 
   const openBottomSheet = () => {
     bottomSheetRef.current?.expand();
@@ -136,7 +137,7 @@ const Home = () => {
     if (!searchTerm.trim()) return;
     setIsLoading(true);
     try {
-      const response = await fetch(`http://192.168.253.200:8080/api/public/users/search?q=${searchTerm}`);
+      const response = await fetch(`${url}/api/public/users/search?q=${searchTerm}`);
       if (!response.ok) throw new Error('Search failed');
       const data = await response.json();
       setFoundUser(data);
@@ -166,7 +167,7 @@ const Home = () => {
       const user = await JSON.parse(userString);
       const token = user.token;
       // console.log("Token \n =>",token)
-      const response = await fetch(`http://192.168.253.200:8080/api/friends/requests?recipientId=${foundUser.document_Id}`, {
+      const response = await fetch(`${url}/api/friends/requests?recipientId=${foundUser.document_Id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -198,7 +199,7 @@ const getFriends = async () => {
       const userString = await AsyncStorage.getItem('user');
       const user = await JSON.parse(userString);
       const token = user.token;
-      const response = await fetch('http://192.168.253.200:8080/api/friends', {
+      const response = await fetch(`${url}/api/friends`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
