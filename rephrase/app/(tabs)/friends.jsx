@@ -2,7 +2,6 @@ import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Image, Fla
 import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react'
 import FriendRequest from '../components/friendRequest';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { error } from 'react-native-gifted-chat/lib/utils';
 import MyFriends from '../components/myFriends';
 import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 
@@ -104,7 +103,7 @@ const FriendsSreen = () => {
     //if (!document_Id) { throw new Error("the target id is empty"); return; }
     try {
       setIsLoading(true);
-
+       console.log("\n\n ID",document_Id,"\n\n")
       const response = await fetch(`${url}/api/friends/requests/${document_Id}`, {
         method: 'PUT',
         headers: {

@@ -121,10 +121,15 @@ const TabsLayout = () => {
 
               />
             ),
-            headerSearchBarOptions:{
+           
+
+              headerSearchBarOptions:{
              headerIconColor:'#8686DB',
-              placeholder:'Seach for a friend'
+              placeholder:'Seach for a friend',
+              
             },
+            
+          
             headerStyle:{
               backgroundColor:'#8686DB',
               alignItems:'center',

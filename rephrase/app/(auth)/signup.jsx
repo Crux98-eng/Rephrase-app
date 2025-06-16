@@ -38,7 +38,7 @@ const SignUp = () => {
       },
       body: JSON.stringify({
       fullName:form.name,
-      phoneNumber:form.phone,
+     
    
       }),
     });

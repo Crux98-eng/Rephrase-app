@@ -12,6 +12,26 @@
           "cameraPermission": "The app uses your camera to let you take profile pictures."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ed28b5ed-7bd7-4582-90e6-05a90275ae2e"
+      }
+    },
+    "owner": "eric-coder",
+    "android": {
+      "package": "com.rephrase",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/ed28b5ed-7bd7-4582-90e6-05a90275ae2e"
+    },
+    "ios": {}
   }
 }

@@ -41,7 +41,8 @@
     "react-native-web": "^0.20.0",
     "react-native-webview": "^13.13.5",
     "stream-chat-expo": "^7.0.0",
-    "talkjs": "^0.37.0"
+    "talkjs": "^0.37.0",
+    "expo-updates": "~0.28.14"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

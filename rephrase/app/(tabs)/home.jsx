@@ -20,89 +20,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
-const messages = [
-  {
-
-    id: 1,
-    text: "Hey, how's it going?",
-    createdAt: new Date(),
-    user: {
-      _id: 1,
-      name: "John",
-      avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
-    },
-  },
-  {
-    id: 2,
-    text: "I'm doing well, thanks! How about you?",
-    createdAt: new Date(),
-    user: {
-      _id: 2,
-      name: "Bob",
-      avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
-    },
-  },
-  {
-    id: 3,
-    text: "Good to hear! Just working on a project.",
-    createdAt: new Date(),
-    user: {
-      _id: 3,
-      name: "Mark",
-      avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
-    },
-  },
-  {
-    id: 4,
-    text: "Nice, what kind of project?",
-    createdAt: new Date(),
-    user: {
-      _id: 4,
-      name: "Harry",
-      avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
-    },
-  },
-  {
-    id: 5,
-    text: "I'm building a navigation app with real-time chat functionality.",
-    createdAt: new Date(),
-    user: {
-      id: 5,
-      name: "Dvid",
-      avatar: "https://api.dicebear.com/9.x/pixel-art/png",
-    },
-  },
-  {
-    id: 6,
-    text: "Sounds awesome! Let me know if you need any help.",
-    createdAt: new Date(),
-    user: {
-      _id: 6,
-      name: "Bob",
-      avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
-    },
-  },
-  {
-    id: 7,
-    text: "Sounds awesome! Let me know if you need any help.",
-    createdAt: new Date(),
-    user: {
-      _id: 7,
-      name: "Methews (mr.Awerson)",
-      avatar: "https://api.dicebear.com/9.x/bottts/png?flip=false",
-    },
-  },
-  {
-    id: 8,
-    text: "Sounds awesome! Let me know if you need any help.",
-    createdAt: new Date(),
-    user: {
-      _id: 8,
-      name: "John Doe",
-      avatar: "https://api.dicebear.com/9.x/lorelei/png?flip=false",
-    },
-  },
-];
 
 
 
@@ -112,6 +29,7 @@ const Home = () => {
   const [foundUser, setFoundUser] = useState(null);
   const [friends,setFriends] = useState([]);
   const bottomSheetRef = useRef(null);
+  const [foundSearch,setFoundSearch]=useState(false);
   const snapPoints = useMemo(() => ['1%', '20%', '40%', '90%'], []);
   const url = 'https://rephrase-chatapi.onrender.com'
 
@@ -131,7 +49,7 @@ const Home = () => {
   };
   useEffect(()=>{
   getFriends();
-  },[friends.length])
+  },[])
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) return;
@@ -140,9 +58,20 @@ const Home = () => {
       const response = await fetch(`${url}/api/public/users/search?q=${searchTerm}`);
       if (!response.ok) throw new Error('Search failed');
       const data = await response.json();
-      setFoundUser(data);
+      //console.log("\n\n DataSerach ==>",data,"\n\n")
+       
+    if (data.length > 0) {
+      setFoundUser(data[0]); // store the first object
+      
+    }
+    if(!response.ok){
+     setFoundSearch(true);
+    }
+    
+ 
+     
     } catch (error) {
-      console.error('Search error:', error);
+      //console.error('Search error:', error);
     } finally {
       setIsLoading(false);
       setSearchTerm('');
@@ -164,18 +93,21 @@ const Home = () => {
       setIsLoading(true);
       //console.log("\n\nid => ",foundUser.document_Id,"\n\n")
       const userString = await AsyncStorage.getItem('user');
-      const user = await JSON.parse(userString);
-      const token = user.token;
-      // console.log("Token \n =>",token)
-      const response = await fetch(`${url}/api/friends/requests?recipientId=${foundUser.document_Id}`, {
+      const user = JSON.parse(userString);
+      const Token = user.token;
+       //console.log("Doc token \n =>",Token)
+      const response = await fetch(`${url}/api/friends/requests`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${Token}`,
         },
+         body: JSON.stringify({
+          "recipientId":foundUser.document_Id,
+        })
       });
 
-      // console.log("\n\nreturned data  =",data);
+      console.log("\n\nreturned respose  =",response);
       if (response.ok) {
         alert("Request sent successfully");
         //const data = await response.json();
@@ -183,7 +115,7 @@ const Home = () => {
         setFoundUser(null);
       } else {
         //console.log("Server responded with error:", response);
-       // alert("Failed to send request: " + (data.message || 'Unknown error'));
+        alert("Failed to send request: " + (data.message || 'Unknown error'));
       }
 
     } catch (error) {
@@ -223,6 +155,7 @@ const getFriends = async () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.topFlatlist}>
+        <>
         <FlatList
           data={friends}
           horizontal
@@ -239,6 +172,17 @@ const getFriends = async () => {
             </View>
           )}
         />
+         { !friends.length > 0 && (
+          <View style={{width:'100%',height:100,
+          backgroundColor:'#8686DB',
+          justifyContent:'center',
+          alignItems:'center',
+          padding:10,
+          }}>
+            <Text style={{color:'white',fontSize:24}}>You have no user. Click the plus and search for your friend</Text>
+          </View>
+         )}
+       </>
       </View>
 
       <View style={styles.container}>
@@ -257,6 +201,7 @@ const getFriends = async () => {
             </>
           )}
         />
+        
 
         <TouchableOpacity onPress={openBottomSheet} style={styles.fabButton}>
           <Image
@@ -292,7 +237,9 @@ const getFriends = async () => {
               {isLoading && <ActivityIndicator size="large" color="#8686DB" style={{ marginTop: 20 }} />}
 
               {foundUser && (
-                <View style={{ width: '100%', marginTop: 20 }}>
+               
+
+                 <View   style={{ width: '100%', marginTop: 20 }}>
                   <FriendRequest
                     addRequest={() => SendRequest()}
                     removeRequest={() => setFoundUser(null)}
@@ -301,7 +248,17 @@ const getFriends = async () => {
                     profile={foundUser.profilePictureUrl || 'https://api.dicebear.com/9.x/lorelei/png'}
                   />
                 </View>
-              )}
+              
+             
+              )
+              }
+            
+              
+              {foundSearch && (
+                <View style={{width:'100%',height:100,justifyContent:'center',alignItems:'center',marginTop:90}}>
+                  <Text style={{color:'red',fontSize:18}}>user not found</Text>
+                </View>
+              ) }
             </ScrollView>
           </BottomSheetView>
         </BottomSheet>
