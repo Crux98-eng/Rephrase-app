@@ -1,11 +1,11 @@
-import { View, Text ,StyleSheet,Image} from 'react-native'
-import React from 'react'
+import { View, Text ,StyleSheet,Image,TouchableOpacity} from 'react-native'
+import React, { useState } from 'react'
 import { Tabs } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import logo_primary from '../assets/icons/logo_primary.png'
 
 const TabsIcon = ({ icon, color, focused }) => (
-    
+   
       <View style={{justifyContent:'center',alignItems:'center'}}>
         <Image
           source={icon}
@@ -19,6 +19,8 @@ const TabsIcon = ({ icon, color, focused }) => (
       </View>
     );
 const ChatLayout = () => {
+   
+    
     
   return (
     <GestureHandlerRootView>
@@ -30,7 +32,7 @@ const ChatLayout = () => {
     name="[userId]"
     options={{
       title: 'chat',
-      headerShown:false,
+      headerShown:true,
            tabBarIcon: ({ focused, color }) => (
             <TabsIcon
               icon={logo_primary}
@@ -38,6 +40,7 @@ const ChatLayout = () => {
               focused={focused}
             />
            ),
+          
     }}
   />
 </Tabs>

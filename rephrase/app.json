@@ -13,6 +13,7 @@
         }
       ]
     ],
+    
     "extra": {
       "eas": {
         "projectId": "ed28b5ed-7bd7-4582-90e6-05a90275ae2e"
@@ -32,6 +33,11 @@
     "updates": {
       "url": "https://u.expo.dev/ed28b5ed-7bd7-4582-90e6-05a90275ae2e"
     },
-    "ios": {}
+    "ios": {},
+    "splash": {
+      "image": "./logo_secondary.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#8686DB"
+    }
   }
 }
