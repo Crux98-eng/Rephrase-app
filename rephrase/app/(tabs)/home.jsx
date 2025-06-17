@@ -689,17 +689,21 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     marginBottom: 20,
+    marginRight:40,
   },
   searchIconWrapper: {
     alignSelf: 'flex-end',
     marginBottom: 20,
+    
   },
   searchIcon: {
-    width: 24,
-    height: 24,
+    width: 40,
+    height: 40,
     marginRight:30,
     tintColor: '#8686DB',
    marginTop:-60,
+   marginRight:10,
+   backgroundColor:'white',
   },
 
   notFoundContainer: {

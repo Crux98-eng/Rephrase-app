@@ -40,6 +40,8 @@ const ChatLayout = () => {
               focused={focused}
             />
            ),
+           headerBackButtonDisplayMode:'default',
+           headerBackVisible:true,
           
     }}
   />
