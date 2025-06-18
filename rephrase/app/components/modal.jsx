@@ -9,14 +9,14 @@ export default function Mymodal({ visible, onClose }) {
 
   const [isChangeProfile, setIsChangeProfle] = useState(false);
   const[profileImage,seProfileImage]=useState('');
-  const [userData ,setUserData] = useState([])
+  const [userData ,setUserData] = useState(null)
    useEffect(() => {
     loadUser();
 
   }, [])
   const loadUser = async () => {
     const userDataString = await AsyncStorage.getItem('user');
-    const user = userDataString ? JSON.parse(userDataString) : null;
+    const user =  JSON.parse(userDataString)
     setUserData(user);
   };
   const handleLaunce = async() => {
@@ -134,7 +134,7 @@ const handleUseCamera = async () => {
          }}>user infor</Text>
         <View style={styles.infoContainer}>
 
-         <Text style={{color:'#1B0333'}}>Name  : {userData.name? userData.name :"user"}</Text>
+         <Text style={{color:'#1B0333'}}>Name  : {userData.fullName}</Text>
          <Text style={{color:'#1B0333'}}>Email :{userData.email} </Text>
          <Text style={{color:'#1B0333'}}>Phone : </Text>
 

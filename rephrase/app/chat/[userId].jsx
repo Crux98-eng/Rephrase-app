@@ -148,7 +148,7 @@ const ChatScreen = () => {
       <Image source={require("../assets/icons/chatbg.png")} style={styles.imageBg} />
 
       {/* Top bar */}
-      {/* <View style={styles.topBar}>
+      <View style={styles.topBar}>
         <TouchableOpacity onPress={handleBack} style={styles.backButton}>
           <Image source={require("../assets/icons/left-arrow.png")} resizeMode='contain' />
         </TouchableOpacity>
@@ -156,7 +156,7 @@ const ChatScreen = () => {
           <Image source={require('../assets/icons/profile.png')} style={styles.profileImage} resizeMode='contain' />
         </View>
         <Text style={styles.nameText}>{name}</Text>
-      </View> */}
+      </View>
 
       {/* Chat messages */}
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
