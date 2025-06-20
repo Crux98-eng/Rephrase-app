@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'rea
 import Modal from 'react-native-modal';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TextInput } from 'react-native-gesture-handler';
 const { height } = Dimensions.get('window');
 
 export default function Mymodal({ visible, onClose }) {
@@ -18,6 +19,7 @@ export default function Mymodal({ visible, onClose }) {
     const userDataString = await AsyncStorage.getItem('user');
     const user =  JSON.parse(userDataString)
     setUserData(user);
+    console.log("\n\nuser==> ",user);
   };
   const handleLaunce = async() => {
   
@@ -79,6 +81,8 @@ const handleUseCamera = async () => {
   const handleSetProfile = () => {
     setIsChangeProfle(!isChangeProfile);
   }
+  //displayName": "", "emai
+ const name = userData.displayName || "User";
   return (
     //the modal coming from react native library helps us to easily achieve side bar behavior
     <Modal
@@ -134,8 +138,8 @@ const handleUseCamera = async () => {
          }}>user infor</Text>
         <View style={styles.infoContainer}>
 
-         <Text style={{color:'#1B0333'}}>Name  : {userData.fullName}</Text>
-         <Text style={{color:'#1B0333'}}>Email :{userData.email} </Text>
+         <Text style={{color:'#1B0333'}}>Name  : {name }</Text>
+         <Text style={{color:'#1B0333'}}>Email :{userData? userData.email : "no email"} </Text>
          <Text style={{color:'#1B0333'}}>Phone : </Text>
 
 
