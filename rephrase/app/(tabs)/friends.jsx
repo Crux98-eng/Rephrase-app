@@ -4,7 +4,8 @@ import FriendRequest from '../components/friendRequest';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MyFriends from '../components/myFriends';
 import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
-
+import { custom_colors } from '../utilities/colors';
+import { SafeAreaView } from 'react-native-safe-area-context';
 const FriendsSreen = () => {
   const url = 'https://rephrase-chatapi.onrender.com';
   const [showFriends, setShowFriens] = useState(true);
@@ -19,7 +20,13 @@ const FriendsSreen = () => {
     getRequests();
     getFriends();
   }
+  const profileColors = ['#FFCC00', '#33CC33', '#Ff3399'];
 
+
+  const assertColors = () => {
+    const index = Math.floor(Math.random() * profileColors.length);
+    return profileColors[index];
+  }
   const renderBackdrop = useCallback((props) => (
     <BottomSheetBackdrop
       {...props}
@@ -103,7 +110,7 @@ const FriendsSreen = () => {
     //if (!document_Id) { throw new Error("the target id is empty"); return; }
     try {
       setIsLoading(true);
-       console.log("\n\n ID",document_Id,"\n\n")
+      console.log("\n\n ID", document_Id, "\n\n")
       const response = await fetch(`${url}/api/friends/requests/${document_Id}`, {
         method: 'PUT',
         headers: {
@@ -167,11 +174,19 @@ const FriendsSreen = () => {
   };
 
   return (
-    <View>
+    <SafeAreaView style={{flex:1}}>
       <View style={styles.buttonContainer}>
+        <Text style={{
+          fontFamily: 'Colonna',
+          fontSize: 60,
+          position: 'absolute',
+          top: 30,
+          alignSelf: 'center',
+          color: 'white',
+        }}>Friends</Text>
         {/* buttons to decide what to display */}
         <TouchableOpacity onPress={() => setShowFriens(true)} style={styles.btn1}>
-          <Text>find friends</Text>
+          <Text style={{ color: 'white' }}>find friends</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => handleButton()} style={styles.btn2}>
@@ -189,7 +204,7 @@ const FriendsSreen = () => {
                   name={user.fullName}
                   confirmRequest={() => { confirmRequest(user.document_Id) }}
                   isRequest={true}
-
+                  Color={assertColors()}
                 />
               </View>
             ))
@@ -225,23 +240,22 @@ const FriendsSreen = () => {
         )
       }
       {!showFriends && (
-
-        <FlatList
-          data={friends}
-
-          keyExtractor={(item) => item.document_Id.toString()}
-          renderItem={({ item }) => (
-
-            <MyFriends
-              pressed={() => openBottomSheet(item)}
-              name={item.fullName}
-              profilePic={item.profilePictureUrl}
-
-            />
-
-
-          )}
-        />
+        <View style={{ flex: 1,}}>
+          <FlatList
+            data={friends}
+            scrollEnabled={true}
+            keyExtractor={(item) => item.document_Id.toString()}
+            renderItem={({ item }) => (
+              <MyFriends
+                pressed={() => openBottomSheet(item)}
+                name={item.fullName}
+                profilePic={item.profilePictureUrl}
+                Color={assertColors()}
+              />
+            )}
+            contentContainerStyle={{ paddingBottom: 100 }} // if you have a FAB or bottom tab
+          />
+        </View>
 
 
       )
@@ -269,7 +283,7 @@ const FriendsSreen = () => {
           </ScrollView>
         </BottomSheetView>
       </BottomSheet>
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -278,27 +292,30 @@ export default FriendsSreen;
 const styles = StyleSheet.create({
   btn1: {
     fontSize: '24pt',
-    backgroundColor: '#E6E6E6',
+    backgroundColor: 'blue',
     paddingHorizontal: 20,
     paddingVertical: 8,
-    color: '#000066'
+    color: '#fff',
   },
   btn2: {
     fontSize: '24pt',
-    backgroundColor: '#E6E6E6',
+    backgroundColor: '#FFCC00',
     paddingHorizontal: 20,
     paddingVertical: 8,
-    color: '#000066'
+    color: '#0000'
 
   },
   buttonContainer: {
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
-    height: 100,
+    height: 200,
+    paddingTop: 80,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 1
+    gap: 1,
+    backgroundColor: custom_colors.primary_dark,
+    borderBottomLeftRadius: 50,
   },
   findFriend: {
     width: '100%',

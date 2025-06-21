@@ -1,88 +1,107 @@
-import React, { useState,useEffect } from 'react';
-import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity,ActivityIndicator } from 'react-native';
 import Modal from 'react-native-modal';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TextInput } from 'react-native-gesture-handler';
+import { FIREBASE_AUTH } from '../../firebase';
+import { router } from 'expo-router';
 const { height } = Dimensions.get('window');
 
 export default function Mymodal({ visible, onClose }) {
 
   const [isChangeProfile, setIsChangeProfle] = useState(false);
-  const[profileImage,seProfileImage]=useState('');
-  const [userData ,setUserData] = useState(null)
-   useEffect(() => {
+  const [profileImage, seProfileImage] = useState('');
+  const [userData, setUserData] = useState(null)
+  const [loading,setLoading]= useState(false);
+  useEffect(() => {
     loadUser();
 
   }, [])
   const loadUser = async () => {
     const userDataString = await AsyncStorage.getItem('user');
-    const user =  JSON.parse(userDataString)
+    const user = JSON.parse(userDataString)
     setUserData(user);
-    console.log("\n\nuser==> ",user);
+    //console.log("\n\nuser==> ", user);
   };
-  const handleLaunce = async() => {
-  
+  const handleLaunce = async () => {
+
     const result = await ImagePicker.launchImageLibraryAsync({
-       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-       allowsEditing:true,
-       aspect:[1,1],
-       quality:1
-    });
-  
-    //console.log(result);
-  if (!result.canceled && result.assets?.length) {
-      seProfileImage(result.assets[0].uri);
-     // console.log("profil ===>  ",profileImage);
-    }
-  };
-
- const requestCameraPermission = async () => {
-  try {
-    const { status, granted, canAskAgain } = await ImagePicker.getCameraPermissionsAsync();
-    //console.log("Permission state:", { status, granted, canAskAgain });
-
-    if (status !== 'granted') {
-      alert('Sorry, we need camera permissions to make this work!');
-      return false;
-    }
-    return true;
-  } catch (err) {
-    console.error("Error requesting camera permission:", err);
-    return false;
-  }
-};
-
-const handleUseCamera = async () => {
-  console.log("handleUseCamera called");
-
-  const status = await requestCameraPermission();
-  console.log("Permission status:", status);
-
-  if (status) {
-    const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 1,
-      base64: false,
-      exif: true,
-      cameraType: ImagePicker.CameraType.back,
+      quality: 1
     });
 
-    if (!result.canceled) {
+    //console.log(result);
+    if (!result.canceled && result.assets?.length) {
       seProfileImage(result.assets[0].uri);
-      console.log("Image URI:", result.assets[0].uri);
-    } else {
-      console.log("User canceled camera.");
+      // console.log("profil ===>  ",profileImage);
     }
-  }
-};
+  };
+  
+  const logout = async () => {
+    router.push('/signin')
+    setLoading(true);
+    try {
+    
+      await signOut(FIREBASE_AUTH); // Firebase sign out
+      await AsyncStorage.removeItem('token'); // Clear token from storage
+    //console.log("signout has been hit")
+      router.replace('/signin'); // Navigate to signin screen
+    } catch (error) {
+      Alert.alert('Error', 'Failed to log out. Try again.');
+      console.error('Logout error:', error);
+    }finally{
+      setLoading(false);
+    }
+  };
+
+  const requestCameraPermission = async () => {
+    try {
+      const { status, granted, canAskAgain } = await ImagePicker.getCameraPermissionsAsync();
+      //console.log("Permission state:", { status, granted, canAskAgain });
+
+      if (status !== 'granted') {
+        alert('Sorry, we need camera permissions to make this work!');
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error("Error requesting camera permission:", err);
+      return false;
+    }
+  };
+
+  const handleUseCamera = async () => {
+    console.log("handleUseCamera called");
+
+    const status = await requestCameraPermission();
+    console.log("Permission status:", status);
+
+    if (status) {
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+        base64: false,
+        exif: true,
+        cameraType: ImagePicker.CameraType.back,
+      });
+
+      if (!result.canceled) {
+        seProfileImage(result.assets[0].uri);
+        console.log("Image URI:", result.assets[0].uri);
+      } else {
+        console.log("User canceled camera.");
+      }
+    }
+  };
   const handleSetProfile = () => {
     setIsChangeProfle(!isChangeProfile);
   }
   //displayName": "", "emai
- const name = userData.displayName || "User";
+  const name = userData?.displayName || "User";
   return (
     //the modal coming from react native library helps us to easily achieve side bar behavior
     <Modal
@@ -114,8 +133,8 @@ const handleUseCamera = async () => {
 
         <View style={styles.profile}>
           <Image
-            source={profileImage ? {uri:profileImage} : require('../assets/icons/profile.png')}
-            style={{ width: 110, height: 110, resizeMode:'cover' }}
+            source={profileImage ? { uri: profileImage } : require('../assets/icons/profile.png')}
+            style={{ width: 110, height: 110, resizeMode: 'cover' }}
           />
         </View>
         <TouchableOpacity style={styles.btn} onPress={onClose} >
@@ -131,16 +150,16 @@ const handleUseCamera = async () => {
           />
 
         </TouchableOpacity>
-         <Text style={{
-          top:200,
-          color:'grey',
+        <Text style={{
+          top: 200,
+          color: 'grey',
 
-         }}>user infor</Text>
+        }}>user infor</Text>
         <View style={styles.infoContainer}>
 
-         <Text style={{color:'#1B0333'}}>Name  : {name }</Text>
-         <Text style={{color:'#1B0333'}}>Email :{userData? userData.email : "no email"} </Text>
-         <Text style={{color:'#1B0333'}}>Phone : </Text>
+          <Text style={{ color: '#1B0333' }}>Name  : {name}</Text>
+          <Text style={{ color: '#1B0333' }}>Email :{userData ? userData.email : "no email"} </Text>
+          <Text style={{ color: '#1B0333' }}>Phone : </Text>
 
 
         </View>
@@ -163,15 +182,15 @@ const handleUseCamera = async () => {
 
               }}>Camera</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>handleLaunce()} style={styles.selectionBtn}>
+            <TouchableOpacity onPress={() => handleLaunce()} style={styles.selectionBtn}>
               <Image
                 source={require('../assets/icons/gallery.png')}
                 style={{
                   resizeMode: 'contain',
                   width: 60,
                   height: 60,
-                  borderColor:'white',
-                  borderWidth:2,
+                  borderColor: 'white',
+                  borderWidth: 2,
                 }}
               />
               <Text style={{
@@ -200,9 +219,19 @@ const handleUseCamera = async () => {
 
               }}>Cancel</Text>
             </TouchableOpacity>
-
+        {loading && (
+        <ActivityIndicator size="large" color="#8686DB" style={{ marginTop: 20 }} />
+          
+        )}
           </View>
         )}
+        <TouchableOpacity onPress={() => {logout()}} style={styles.logout}>
+          <Image
+            source={require('../assets/icons/logout.png')}
+            style={{ width: 35, height: 45, resizeMode: 'contain', tintColor: 'red' }}
+          />
+          <Text style={{ color: 'red', fontSize: 20, marginTop: 10 }}>Logout</Text>
+        </TouchableOpacity>
       </View>
 
     </Modal>
@@ -278,7 +307,7 @@ const styles = StyleSheet.create({
     borderWidth: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    overflow:'hidden',
+    overflow: 'hidden',
   },
   edit_profileImage: {
     width: 50,
@@ -319,17 +348,29 @@ const styles = StyleSheet.create({
     height: 60,
     marginTop: 12
   },
-  infoContainer:{
-    width:'100%',
-    height:160,
-    backgroundColor:'#E6E6E6',
-    position:'absolute',
-    top:280,
-    alignSelf:'center',
-    borderRadius:10,
-   display:'flex',
-   gap:10,
-   padding:20,
-   justifyContent:'center',
+  infoContainer: {
+    width: '100%',
+    height: 160,
+    backgroundColor: '#E6E6E6',
+    position: 'absolute',
+    top: 280,
+    alignSelf: 'center',
+    borderRadius: 10,
+    display: 'flex',
+    gap: 10,
+    padding: 20,
+    justifyContent: 'center',
+  },
+  logout: {
+    width: '100%',
+    height: 50,
+
+    position: 'absolute',
+    top: '90%',
+    left: '10%',
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
+    alignContent: 'center',
   },
 });

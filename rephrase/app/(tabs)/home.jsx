@@ -26,7 +26,8 @@ import BottomSheet, {
 } from '@gorhom/bottom-sheet';
 import FriendRequest from '../components/friendRequest';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { custom_colors } from '../utilities/colors';
+import Mymodal from '../components/modal';
 const API_URL = 'https://rephrase-chatapi.onrender.com';
 
 const Home = () => {
@@ -35,10 +36,16 @@ const Home = () => {
   const [foundUser, setFoundUser] = useState(null);
   const [foundSearch, setFoundSearch] = useState(false);
   const [friends, setFriends] = useState([]);
-
+  const [showModal, setShowmodal] = useState(false);
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ['1%', '20%', '40%', '90%'], []);
+  const profileColors = ['#FFCC00', '#33CC33', '#Ff3399'];
 
+
+  const assertColors = () => {
+    const index = Math.floor(Math.random() * profileColors.length);
+    return profileColors[index];
+  }
   useEffect(() => {
     getFriends();
   }, []);
@@ -46,7 +53,7 @@ const Home = () => {
   const openBottomSheet = () => {
     bottomSheetRef.current?.expand();
   };
-  
+
 
   const handlePress = useCallback((user) => {
     router.push({
@@ -64,7 +71,7 @@ const Home = () => {
       const data = await response.json();
       if (response.ok && data.length > 0) {
         setFoundUser(data[0]);
-        console.log("\n\nsearched users ==>",data[0],"\n\n")
+        console.log("\n\nsearched users ==>", data[0], "\n\n")
       } else {
         setFoundSearch(true);
       }
@@ -122,7 +129,7 @@ const Home = () => {
         const data = await response.json();
         setFriends(data);
       }
-    } catch {}
+    } catch { }
     finally {
       setIsLoading(false);
     }
@@ -133,7 +140,7 @@ const Home = () => {
       <TouchableOpacity onPress={() => handlePress(item)}>
         <Image
           source={item.profilePictureUrl ? { uri: item.profilePictureUrl } : require('../assets/icons/profile.png')}
-          style={styles.avatar}
+          style={[styles.avatar, { tintColor: 'white' }]} f
         />
       </TouchableOpacity>
       <Text style={styles.topListName}>{item.fullName}</Text>
@@ -142,7 +149,9 @@ const Home = () => {
 
   const renderFriendCard = ({ item }) => (
     <>
+
       <Card
+        color={assertColors()}
         onpress={() => handlePress(item)}
         name={item.fullName}
         profilePicture={item.profilePictureUrl}
@@ -163,37 +172,47 @@ const Home = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <View style={styles.topFlatlist}>
-        <FlatList
-          data={friends}
-          horizontal
-          keyExtractor={(item) => item.document_Id}
-          renderItem={renderFriendAvatar}
-        />
-        {!friends.length && (
-          <View style={styles.noFriendsContainer}>
-            <Text style={styles.noFriendsText}>
-              You have no user. Click the plus and search for your friend
-            </Text>
-          </View>
-        )}
-      </View>
-
-      <View style={styles.container}>
-        <FlatList
-          data={friends}
-          keyExtractor={(item) => item.document_Id}
-          renderItem={renderFriendCard}
-        />
-
-        <TouchableOpacity onPress={openBottomSheet} style={styles.fabButton}>
+      <View style={styles.topContainer}>
+        <TouchableOpacity onPress={() => setShowmodal(true)} style={styles.menu}>
           <Image
-            source={require("../assets/icons/addChart.png")}
-            resizeMode='contain'
-            style={styles.fabIcon}
+
+            source={require('../assets/icons/menueBars.png')}
+            style={{ width: 32, height: 23 }}
+
           />
         </TouchableOpacity>
+        <View style={styles.topFlatlist}>
+          <FlatList
+            data={friends}
+            horizontal
+            keyExtractor={(item) => item.document_Id}
+            renderItem={renderFriendAvatar}
+          />
+          {!friends.length && (
+            <View style={styles.noFriendsContainer}>
+              <Text style={styles.noFriendsText}>
+                You have no user. Click the plus and search for your friend
+              </Text>
+            </View>
+          )}
+        </View>
+      </View>
+      <View style={styles.downContainer}>
+        <View style={styles.container}>
+          <FlatList
+            data={friends}
+            keyExtractor={(item) => item.document_Id}
+            renderItem={renderFriendCard}
+          />
 
+          <TouchableOpacity onPress={openBottomSheet} >
+            <Image
+              source={require("../assets/icons/plus.png")}
+              resizeMode='contain'
+              style={styles.fabIcon}
+            />
+          </TouchableOpacity>
+        </View>
         <BottomSheet
           index={-1}
           ref={bottomSheetRef}
@@ -201,17 +220,17 @@ const Home = () => {
           style={styles.bottomSheet}
           backdropComponent={renderBackdrop}
         >
-          <BottomSheetView style={styles.bottomOuter}>
-            <ScrollView>
+          <BottomSheetView style={[styles.bottomOuter]}>
+            <ScrollView style={{ width: '100%' }}>
               <TextInput
-                      style={styles.input}
-                      value={searchTerm}
-                      onChangeText={setSearchTerm}
-                      placeholder='Search for a friend'
-                      placeholderTextColor="#aaa"
-                      
-              
-                    />
+                style={styles.input}
+                value={searchTerm}
+                onChangeText={setSearchTerm}
+                placeholder='Search for a friend'
+                placeholderTextColor="#aaa"
+
+
+              />
               <TouchableOpacity onPress={handleSearch} style={styles.searchIconWrapper}>
                 <Image
                   source={require('../assets/icons/search.png')}
@@ -254,6 +273,12 @@ const Home = () => {
           </View>
         )}
       </View>
+
+      {showModal && (
+        <View style={{ margin: 0, padding: 0 }}>
+          <Mymodal visible={showModal} onClose={() => setShowmodal(false)} />
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -263,15 +288,45 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
   },
 
   // Top Horizontal List (Avatars)
   topFlatlist: {
+    width: 450,
+    height: 100,
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#E6E6E6',
-    backgroundColor:'#8686DB',
+    backgroundColor: custom_colors.primary_light,
+    borderRadius: 15,
+    padding: 10,
+    shadowColor: 'white',
+    elevation: 5,
+
+  },
+
+  topContainer: {
+    width: '100%',
+    height: 300,
+    backgroundColor: custom_colors.primary_dark,
+    display: 'flex',
+    alignItems: 'center',
+    paddingTop: 50,
+
+  },
+  downContainer: {
+    width: '100%',
+    height: '500',
+    backgroundColor: custom_colors.secondary,
+    position: 'absolute',
+    top: 250,
+    borderTopRightRadius: 50,
+    borderTopLeftRadius: 50,
+    paddingTop: 20,
+    alignItems: 'center',
+
+
   },
   imgicons: {
     alignItems: 'center',
@@ -280,12 +335,18 @@ const styles = StyleSheet.create({
   avatar: {
     width: 50,
     height: 50,
+
     borderRadius: 25,
   },
   topListName: {
     marginTop: 6,
     fontSize: 12,
     color: '#333',
+  },
+  menu: {
+    alignSelf: 'flex-start',
+    marginLeft: 26,
+    marginBottom: 20,
   },
   noFriendsContainer: {
     paddingHorizontal: 20,
@@ -297,61 +358,58 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
 
-  // FAB Button
-  fabButton: {
-    position: 'absolute',
-    bottom: 30,
-    right: 30,
-    width: 55,
-    height: 55,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+
   fabIcon: {
-    width: 80,
-    height: 80,
+    width: 50,
+    height: 50,
+    tintColor: custom_colors.primary_dark,
     
+   left:'90%',
   },
 
   // Bottom Sheet
   bottomSheet: {
     backgroundColor: '#fff',
     borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    overflow: 'hidden',
+   borderTopRightRadius: 16,
+ 
+    // 
+    // position:'absolute',
   },
   bottomOuter: {
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 30,
+    width: '100%',
+   
   },
 
   input: {
     borderBottomWidth: 1,
     borderBottomColor: 'grey',
-    height:60,
-     maxWidth:370,
+    height: 60,
+    width:'80%',
     marginBottom: 10,
-    marginRight:40,
+    marginRight: 40,
   },
   searchIconWrapper: {
-    alignSelf: 'flex-end',
+    right:10,
     marginBottom: 20,
-    marginRight:10,
-    zIndex:10,
-    backgroundColor:'white',
-    width:50,
-    justifyContent:'center',
-    alignItems:'center',
-    height:50,
-    position:'absolute',
-    top:20,
+    marginRight: 10,
+    zIndex: 10,
+    backgroundColor: 'white',
+    width: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 50,
+    position: 'absolute',
+    top: 20,
   },
   searchIcon: {
     width: 40,
     height: 40,
     tintColor: '#8686DB',
- 
+
   },
 
   notFoundContainer: {

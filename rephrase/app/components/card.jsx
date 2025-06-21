@@ -1,9 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import React, { useState } from 'react';
+import { custom_colors } from '../utilities/colors';
 
 
 
-const Card = ({ name,onpress, profilePicture, date }) => {
+const Card = ({ name,onpress, profilePicture, date ,color}) => {
   
 
  
@@ -12,16 +13,17 @@ const Card = ({ name,onpress, profilePicture, date }) => {
     <TouchableOpacity onPress={onpress}>
 
       <View style={styles.card}>
-        <View style={styles.header}>
+        <View style={[styles.header,{backgroundColor:color}]}>
           <Image
             source={profilePicture?{uri:profilePicture}:require('../assets/icons/profile.png')}
             style={styles.images}
           />
-          <Text style={styles.name}>{name}</Text>
-          <Text style={styles.date}></Text>
+         
           
         </View>
-
+  <View style={styles.textContainer}>
+     <Text style={[styles.name,{}]}>{name}</Text>
+  </View>
         
       </View>
     </TouchableOpacity> 
@@ -34,7 +36,7 @@ export default Card;
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#ffff',
+   
     borderRadius: 10,
     marginBottom: 10,
     width: 390,
@@ -43,30 +45,41 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5,
     shadowRadius: 4,
+    display:'flex',
+    flexDirection:'row',
 
+  },
+  textContainer:{
+  width:300,
+  height:50,
+  borderRadius:8,
+  backgroundColor:'white',
+  display:'flex',
+  justifyContent:'center',
+  alignItems:'flex-start',
+  paddingLeft:20,
+  marginLeft:10,
+  
+    
   },
   cardExpanded: {
     backgroundColor: '#fdf6f0',
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    width:50,
+    height:50,
+    borderRadius:'50%',
+    display:'flex',
+    alignItems:'center',
+    overflow:'hidden',
+    paddingTop:10,
   },
-  date:{
- position:'absolute',
- color:'grey',
- top:40,
- left:60,
-
-
-  },
+ 
   images: {
     width: 40,
     height: 40,
-    resizeMode: 'contentFit',
-    borderRadius: 25,
-   backgroundColor:'#8686DB',
-    marginRight: 12,
+    marginBottom:0,
+    
   },
   infoContainer: {
     marginTop: 10,

@@ -38,7 +38,7 @@ const handleSubmit = async () => {
 
     // Get token
     const token = await userCredential.user.getIdToken();
- console.log("\n\n",token,"\n\n")
+   // console.log("\n\n",token,"\n\n")
     // Send token to backend
     const response = await fetch(`${url}/api/auth/me`, {
       method: 'GET',
@@ -52,10 +52,11 @@ const handleSubmit = async () => {
 
     if (response.ok) {
       // Build and store user + token data
+      console.log("username ==>",backendData.fullName)
       const userDataToStore = {
         uid: userCredential.user.uid,
         email: userCredential.user.email,
-        displayName: userCredential.user.displayName ?? '',
+        displayName: backendData.fullName ?? '',
         photoURL: userCredential.user.photoURL ?? '',
         token: token,
         refreshToken: userCredential.user.refreshToken,
@@ -108,11 +109,12 @@ const handleSubmit = async () => {
             secureTextEntry
           />
 
+
           <CustomButton
           styling={styles.buton}
             title={loading ? 'Logging in...' : 'Login'}
             onPress={()=>{handleSubmit()}}
-           // onPress={()=> router.push('/home')}
+            //onPress={()=> router.push('/home')}
             disabled={loading}
           />
 
@@ -141,8 +143,9 @@ const styles = StyleSheet.create({
   },
   buton:{
   backgroundColor:'#FF6600',
-  width:350,
-  left:12,
+  width:400,
+  alignSelf:'center'
+
   },
   outer: {
     alignContents: 'center',

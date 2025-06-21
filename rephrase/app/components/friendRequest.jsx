@@ -1,14 +1,16 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 
-const FriendRequest = ({ name, isRequest, profile, confirmRequest, cancelRequest, addRequest, removeRequest }) => {
+const FriendRequest = ({ name, Color,isRequest, profile, confirmRequest, cancelRequest, addRequest, removeRequest }) => {
+ 
+    
     return (
         <View style={styles.container}>
             <TouchableOpacity>
-                <View style={styles.profile}>
+                <View style={[styles.profile,{backgroundColor:Color}]}>
                     <Image
                         source={profile ? { uri: profile } : require('../assets/icons/profile.png')}
-                        style={{ width: 60, height: 60, }}
+                        style={{ width: 40, height: 40,marginTop:20 }}
                     />
                 </View>
                 <Text style={styles.names} >{name}</Text>
@@ -59,6 +61,7 @@ const styles = StyleSheet.create({
     names: {
         position: 'absolute',
         marginLeft: 130,
+         bottom:40,
         fontSize: 24,
         color: 'black',
 
@@ -92,12 +95,11 @@ const styles = StyleSheet.create({
     },
     profile: {
 
-        backgroundColor: '#8686DB',
-        width: 80,
-        height: 80,
+        width: 60,
+        height: 60,
         borderRadius: '50%',
         left: 20,
-        justifyContent: 'center',
+        
         alignItems: 'center',
         overflow: 'hidden',
 

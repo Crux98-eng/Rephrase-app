@@ -40,7 +40,7 @@ const TabsLayout = () => {
           name="home"
           options={{
             title: 'Home',
-            headerShown: true,
+            headerShown: false,
             tabBarIcon: ({ focused, color }) => (
               <TabsIcon
                 icon={require('../assets/icons/home.png')}
@@ -49,68 +49,14 @@ const TabsLayout = () => {
               />
             ),
 
-            headerRight: () => (
-              <View style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-
-              }}>
-                <TouchableOpacity style={{
-                  width: 50,
-                  height: 50,
-                  right: 20,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 10,
-                }}
-                  onPress={() => setModalVisible(true)}
-                >
-                  <Image
-                    source={require('../assets/icons/profile.png')}
-                    style={{
-                      width: 30,
-                      height: 30,
-                      resizeMode: 'contain'
-                    }}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    width: 50,
-                    height: 50,
-                    right: 20,
-                    marginTop: 10,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                  onPress={logout}
-                >
-                  <Image
-                    source={require('../assets/icons/logout.png')}
-                    resizeMode="contain"
-                    style={{
-
-                      width: 25,
-                      height: 25,
-                      tintColor: '#000066',
-                    }}
-                  />
-                </TouchableOpacity>
-                {modaVisible && (
-                  <View style={{ margin: 0, padding: 0 }}>
-                    <Mymodal visible={modaVisible} onClose={() => setModalVisible(false)} />
-                  </View>
-                )}
-              </View>
-            ),
+            
           }}
         />
 <Tabs.Screen
           name="friends"
           options={{
             title: 'friends',
-            headerShown: true,
+            headerShown: false,
            
             tabBarIcon: ({ focused, color }) => (
               <TabsIcon

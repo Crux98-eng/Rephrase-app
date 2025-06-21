@@ -127,9 +127,8 @@ const styles = StyleSheet.create({
   },
   btn:{
  backgroundColor:'#FF6600',
-  width:350,
-  left:12,
-
+  width:400,
+  alignSelf:'center'
   },
   outer: {
     alignContents: 'center',

@@ -1,10 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity, View,Image } from 'react-native'
 import React from 'react'
 
-const MyFriends = ({name,profilePic,pressed}) => {
+const MyFriends = ({name,profilePic,pressed,Color}) => {
   return (
     <View style={styles.continer}>
-        <TouchableOpacity onPress={pressed} style={styles.touchables}>
+        <TouchableOpacity onPress={pressed} style={[styles.touchables,{backgroundColor:Color}]}>
             
             <Image
             source={profilePic? {uri:profilePic}:require('../assets/icons/profile.png')}
@@ -39,7 +39,7 @@ touchables:{
     width:60,
     height:60,
     borderRadius:'50%',
-    backgroundColor:'#8686DB',
+    
    overflow:'hidden',
     alignItems:'center',
     marginLeft:40,

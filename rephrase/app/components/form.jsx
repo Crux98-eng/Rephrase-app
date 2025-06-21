@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet,Image, TouchableOpacity } from 'react-native';
-
+import { custom_colors } from '../utilities/colors';
 export const FormField = ({ title, value, handleChangeText, keyboardType, style,inputStyle,inputs }) => {
  const eyeOpen = require('../assets/icons/eye.png');
  const eyeClose = require('../assets/icons/Eyeclose.png');
@@ -53,27 +53,28 @@ const styles = StyleSheet.create({
     marginRight:15,
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: custom_colors.peimary_aut,
     borderRadius: 5,
     padding: 12,
-    width:380,
+    width:'100%',
     marginLeft: 0,
     marginRight:15,
     fontSize: 16,
+    color:'white',
   },
   iconContainer: {
-    padding: 10,
-    position: 'absolute',
-    right: 27,
-    top: 2,
+    padding: 0,
+    right:80,
+    top: 0,
     zIndex: 1,
-    backgroundColor: '#fff',
+   alignItems:'center',
+   justifyContent:'center'
    
   },
   icon: {
-    width: 20,
-    height: 20,
-    tintColor: 'blue',
+    width: 30,
+    height: 30,
+    tintColor: 'white',
     
   },
   inputContainer: {
@@ -83,6 +84,6 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginRight: 15,
     borderBottomWidth: 1,
-    // borderBottomColor: '#ccc',
+    borderBottomColor: '#ccc',
   },
 });
