@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FIREBASE_AUTH } from '../../firebase';
 import { router } from 'expo-router';
 const { height } = Dimensions.get('window');
+const API_URL = 'https://rephrase-chatapi.onrender.com';
 
 export default function Mymodal({ visible, onClose }) {
 
@@ -21,24 +22,61 @@ export default function Mymodal({ visible, onClose }) {
     const userDataString = await AsyncStorage.getItem('user');
     const user = JSON.parse(userDataString)
     setUserData(user);
-    //console.log("\n\nuser==> ", user);
+   // console.log("\n\nuser==> ", user);
   };
-  const handleLaunce = async () => {
+ 
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1
+const handleLaunce = async () => {
+   setIsChangeProfle(false);
+  const userString = await AsyncStorage.getItem('user');
+  const user = JSON.parse(userString);
+  const Token = user.token;
+
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    aspect: [1, 1],
+    quality: 1,
+  });
+
+  if (!result.canceled && result.assets?.length) {
+    const imageUri = result.assets[0].uri;
+    seProfileImage(imageUri); // Assuming this updates UI
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append('file', {
+      uri:  imageUri,
+      name: 'profile.jpg',
+      type: 'image/jpeg',
     });
 
-    //console.log(result);
-    if (!result.canceled && result.assets?.length) {
-      seProfileImage(result.assets[0].uri);
-      // console.log("profil ===>  ",profileImage);
+    try {
+      const response = await fetch(`${API_URL}/api/users/media/profile`, {
+        method: 'POST',
+        headers: {
+          'Content-Type':'multipart/form-data',
+          'Authorization': `Bearer ${Token}`,
+        },
+        body: formData,
+      });
+         if(response.ok){
+         
+          alert("apploaded successifully");
+          
+     // const json = await response.json();
+      //console.log('Server Response:', json);
+         }
+    } catch (err) {
+      console.error('Upload error:', err);
+    } finally {
+      setLoading(false);
     }
-  };
-  
+
+   // console.log('Profile URI =>', imageUri);
+  }
+};
+
   const logout = async () => {
     router.push('/signin')
     setLoading(true);
@@ -59,11 +97,11 @@ export default function Mymodal({ visible, onClose }) {
   const requestCameraPermission = async () => {
     try {
       const { status, granted, canAskAgain } = await ImagePicker.getCameraPermissionsAsync();
-      //console.log("Permission state:", { status, granted, canAskAgain });
+      console.log("Permission state:", { status, granted, canAskAgain });
 
-      if (status !== 'granted') {
-        alert('Sorry, we need camera permissions to make this work!');
-        return false;
+      if (status == 'granted') {
+       // alert('Sorry, we need camera permissions to make this work!');
+        return true;
       }
       return true;
     } catch (err) {
@@ -73,8 +111,11 @@ export default function Mymodal({ visible, onClose }) {
   };
 
   const handleUseCamera = async () => {
-    console.log("handleUseCamera called");
-
+ setIsChangeProfle(false);
+   // console.log("handleUseCamera called");
+  const userString = await AsyncStorage.getItem('user');
+  const user = JSON.parse(userString);
+  const Token = user.token;
     const status = await requestCameraPermission();
     console.log("Permission status:", status);
 
@@ -86,12 +127,42 @@ export default function Mymodal({ visible, onClose }) {
         quality: 1,
         base64: false,
         exif: true,
-        cameraType: ImagePicker.CameraType.back,
+        cameraType: ImagePicker.CameraType.front='front',
       });
 
       if (!result.canceled) {
-        seProfileImage(result.assets[0].uri);
-        console.log("Image URI:", result.assets[0].uri);
+          const imageUri = result.assets[0].uri;
+    seProfileImage(imageUri); // Assuming this updates UI
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append('file', {
+      uri:  imageUri,
+      name: 'profile.jpg',
+      type: 'image/jpeg',
+    });
+       try {
+
+      const response = await fetch(`${API_URL}/api/users/media/profile`, {
+        method: 'POST',
+        headers: {
+          'Content-Type':'multipart/form-data',
+          'Authorization': `Bearer ${Token}`,
+        },
+        body: formData,
+      });
+         if(response.ok){
+         
+          alert("apploaded successifully");
+          
+     // const json = await response.json();
+      //console.log('Server Response:', json);
+         }
+    } catch (err) {
+      console.error('Upload error:', err);
+    } finally {
+      setLoading(false);
+    };
       } else {
         console.log("User canceled camera.");
       }
@@ -133,8 +204,8 @@ export default function Mymodal({ visible, onClose }) {
 
         <View style={styles.profile}>
           <Image
-            source={profileImage ? { uri: profileImage } : require('../assets/icons/profile.png')}
-            style={{ width: 110, height: 110, resizeMode: 'cover' }}
+            source={ userData?.photoURL ? { uri: userData.photoURL } : require('../assets/icons/profile.png')}
+            style={{ width: 110, height: 110, resizeMode: 'contentFit' }}
           />
         </View>
         <TouchableOpacity style={styles.btn} onPress={onClose} >

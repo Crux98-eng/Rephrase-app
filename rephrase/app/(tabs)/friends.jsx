@@ -208,37 +208,29 @@ const FriendsSreen = () => {
                 />
               </View>
             ))
-
+          
             }
-            {isLoading &&
-              <View style={{
-                width: '100%',
-                height: '100%',
-                position: 'absolute',
-                backgroundColor: 'white',
+           {!isRequests.length &&(
+            <View style={{width:'100%',
+            height:100,
+          
+            display:'flex',
+            justifyContent:'center',
+            alignItems:'center',
+            }}>
+              <Text style={{color:'grey',fontSize:18,fontStyle:'italic'}}>you don`t have friends request</Text>
+            </View>
+           )
 
-              }}>
-                <Image
-                  source={require('../assets/icons/loading-bg.png')}
-                  style={{ width: '100%', height: '100%' }}
-                />
-                <ActivityIndicator
-                  size="large"
-                  color="#8686DB"
-                  style={{
-                    marginTop: 20,
-                    transform: [{ scale: 2 }],
-                    width: '100%',
-                    height: '100%',
-                    position: 'absolute',
-                  }} />
-
-              </View>}
+           }
 
 
           </View>
         )
-      }
+        
+        
+        }
+
       {!showFriends && (
         <View style={{ flex: 1,}}>
           <FlatList
@@ -270,9 +262,21 @@ const FriendsSreen = () => {
         <BottomSheetView style={styles.bottomOuter}>
           <ScrollView>
             <View style={styles.userProfile}>
+              <Image 
+              source={require('../assets/images/profile-bg.png')}
+              style={{
+                width:'100%',
+                height:200,
+                position:'absolute',
+                zIndex:-1,
+                borderRadius:15,
+              }}
+              />
               <Image
-                style={{ width: 150, height: 150 }}
-                source={currentUser.profilePictureUrl ? { uri: profilePictureUrl } : require('../assets/icons/profile.png')}
+                style={currentUser.profilePictureUrl ?{ width: 170, height: 170,borderRadius:15 }:{
+                  width:90,height:90
+                }}
+                source={currentUser.profilePictureUrl ? { uri: currentUser.profilePictureUrl } : require('../assets/icons/profile.png')}
               />
             </View>
             <Text style={{ fontSize: 18, color: 'grey', marginLeft: 40, marginTop: 10 }} >Name  :<Text style={{ color: 'blue' }}> {currentUser.fullName}</Text></Text>
@@ -283,6 +287,30 @@ const FriendsSreen = () => {
           </ScrollView>
         </BottomSheetView>
       </BottomSheet>
+       {isLoading &&
+              <View style={{
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+                backgroundColor: 'white',
+
+              }}>
+                <Image
+                  source={require('../assets/icons/loading-bg.png')}
+                  style={{ width: '100%', height: '100%' }}
+                />
+                <ActivityIndicator
+                  size="large"
+                  color="#8686DB"
+                  style={{
+                    marginTop: 20,
+                    transform: [{ scale: 2 }],
+                    width: '100%',
+                    height: '100%',
+                    position: 'absolute',
+                  }} />
+
+              </View>}
     </SafeAreaView>
   )
 }
@@ -333,7 +361,7 @@ const styles = StyleSheet.create({
   userProfile: {
     width: '90%',
     height: 200,
-    backgroundColor: '#E6E6E6',
+    
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',

@@ -50,10 +50,10 @@ const SignUp = () => {
       Alert.alert('Success', 'Registration successful!');
       router.push('/signin');
     } else {
-      Alert.alert('Error', data.message || 'Something went wrong.');
+      Alert.alert('Error', 'Something went wrong.');
     }
   } catch (error) {
-    console.error('Registration error:', error);
+    //console.error('Registration error:', error);
     Alert.alert('Error', 'Something went wrong. Please try again later.');
   } finally {
     setLoading(false);

@@ -58,7 +58,9 @@ const Home = () => {
   const handlePress = useCallback((user) => {
     router.push({
       pathname: `/chat/${user.document_Id}`,
-      params: { name: user.fullName }
+      params: { name: user.fullName,
+              avatar:user.profilePictureUrl
+       }
     });
   }, []);
 
@@ -71,7 +73,7 @@ const Home = () => {
       const data = await response.json();
       if (response.ok && data.length > 0) {
         setFoundUser(data[0]);
-        console.log("\n\nsearched users ==>", data[0], "\n\n")
+        //console.log("\n\nsearched users ==>", data[0], "\n\n")
       } else {
         setFoundSearch(true);
       }
@@ -139,8 +141,9 @@ const Home = () => {
     <View style={styles.imgicons}>
       <TouchableOpacity onPress={() => handlePress(item)}>
         <Image
-          source={item.profilePictureUrl ? { uri: item.profilePictureUrl } : require('../assets/icons/profile.png')}
-          style={[styles.avatar, { tintColor: 'white' }]} f
+          source={item.profilePictureUrl ? { uri: item.profilePictureUrl }
+           : require('../assets/icons/profile.png')}
+          style={[item.profilePictureUrl ?styles.avatar:{ tintColor: 'white' }]} f
         />
       </TouchableOpacity>
       <Text style={styles.topListName}>{item.fullName}</Text>
@@ -293,7 +296,7 @@ const styles = StyleSheet.create({
 
   // Top Horizontal List (Avatars)
   topFlatlist: {
-    width: 450,
+    width: '90%',
     height: 100,
     paddingVertical: 10,
     borderBottomWidth: 1,
@@ -364,7 +367,7 @@ const styles = StyleSheet.create({
     height: 50,
     tintColor: custom_colors.primary_dark,
     
-   left:'90%',
+   left:'85%',
   },
 
   // Bottom Sheet

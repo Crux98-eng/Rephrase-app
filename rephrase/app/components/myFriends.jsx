@@ -8,7 +8,7 @@ const MyFriends = ({name,profilePic,pressed,Color}) => {
             
             <Image
             source={profilePic? {uri:profilePic}:require('../assets/icons/profile.png')}
-            style={{width:45, height:45,marginTop:16}}
+            style={profilePic?{ width:90, height:90}:{width:50,height:50,marginTop:20,tintColor:'#ffff'}}
             />
             </TouchableOpacity>
             <TouchableOpacity onPress={pressed} style={styles.names}>

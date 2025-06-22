@@ -16,7 +16,7 @@ const Card = ({ name,onpress, profilePicture, date ,color}) => {
         <View style={[styles.header,{backgroundColor:color}]}>
           <Image
             source={profilePicture?{uri:profilePicture}:require('../assets/icons/profile.png')}
-            style={styles.images}
+            style={[profilePicture?{width:80,height:80}:styles.images]}
           />
          
           
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     borderRadius:'50%',
     display:'flex',
     alignItems:'center',
+    justifyContent:'center',
     overflow:'hidden',
     paddingTop:10,
   },

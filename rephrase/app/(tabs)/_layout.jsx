@@ -5,7 +5,9 @@ import { signOut } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FIREBASE_AUTH } from '../../firebase'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Mymodal from '../components/modal';
+import { custom_colors } from '../utilities/colors';
+
+
 const TabsIcon = ({ icon, color, focused,extraStyles }) => (
   <View>
     <Image
@@ -14,7 +16,7 @@ const TabsIcon = ({ icon, color, focused,extraStyles }) => (
       style={[extraStyles,{
         width: 20,
         height: 20,
-        tintColor: focused ? '#000066' : color,
+        tintColor: focused ? 'blue' : color,
       }]}
     />
   </View>

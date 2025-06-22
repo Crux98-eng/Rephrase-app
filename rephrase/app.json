@@ -23,7 +23,7 @@
     "android": {
       "package": "com.rephrase",
       "permissions": [
-        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ]
     },
@@ -37,7 +37,7 @@
     "splash": {
       "image": "./logo_secondary.png",
       "resizeMode": "contain",
-      "backgroundColor": "#8686DB"
+      "backgroundColor": "#ffffff"
     }
   }
 }

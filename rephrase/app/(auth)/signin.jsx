@@ -52,12 +52,12 @@ const handleSubmit = async () => {
 
     if (response.ok) {
       // Build and store user + token data
-      console.log("username ==>",backendData.fullName)
+     // console.log("username user....... ==>",backendData)
       const userDataToStore = {
         uid: userCredential.user.uid,
         email: userCredential.user.email,
         displayName: backendData.fullName ?? '',
-        photoURL: userCredential.user.photoURL ?? '',
+        photoURL: backendData.profilePictureUrl ?? '',
         token: token,
         refreshToken: userCredential.user.refreshToken,
       };
@@ -74,10 +74,10 @@ const handleSubmit = async () => {
         ? JSON.parse(errorText)?.message
         : errorText;
 
-      Alert.alert('Error', errorMessage || 'Invalid credentials');
+      Alert.alert('Error', 'Invalid credentials');
     }
   } catch (error) {
-    console.error('Login error:', error);
+    //console.error('Login error:', error);
     Alert.alert('Error', 'Something went wrong. Please try again later.');
   } finally {
     setLoading(false);

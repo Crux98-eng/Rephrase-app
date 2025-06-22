@@ -15,10 +15,10 @@ import {
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { router, useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import {custom_colors} from '../utilities/colors'
 // Chat screen with improved state, edge case handling, and timestamps
 const ChatScreen = () => {
-  const { userId, name } = useLocalSearchParams();
+  const { userId, name ,avatar} = useLocalSearchParams();
   const [id, setId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [chatMessages, setChatMessages] = useState([]);
@@ -150,10 +150,11 @@ const ChatScreen = () => {
       {/* Top bar */}
       <View style={styles.topBar}>
         <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-          <Image source={require("../assets/icons/left-arrow.png")} resizeMode='contain' />
+          <Image style={{tintColor:'#ffff'}} source={require("../assets/icons/left-arrow.png")} resizeMode='contain' />
         </TouchableOpacity>
         <View style={styles.profileContainer}>
-          <Image source={require('../assets/icons/profile.png')} style={styles.profileImage} resizeMode='contain' />
+          <Image source={ avatar ? {uri:avatar}:require('../assets/icons/profile.png')}
+           style={[avatar? styles.profileImage:{width:40,height:40}]} resizeMode='contain' />
         </View>
         <Text style={styles.nameText}>{name}</Text>
       </View>
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
   topBar: {
     width: '100%',
     height: 100,
-    backgroundColor: '#000066',
+    backgroundColor: custom_colors.primary_dark,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 50,
@@ -222,7 +223,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   profileContainer: {
-    backgroundColor: '#8686DB',
+    backgroundColor: custom_colors.primary_aut,
     borderColor: 'white',
     borderWidth: 2,
     width: 50,
@@ -235,8 +236,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   profileImage: {
-    width: 40,
-    height: 40,
+    width: 80,
+    height: 80,
   },
   nameText: {
     color: 'white',
@@ -258,7 +259,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   mine: {
-    backgroundColor: '#000066',
+    backgroundColor: custom_colors.primary_dark,
     alignSelf: 'flex-end',
   },
   theirs: {
@@ -314,7 +315,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
   },
   sendButton: {
-    backgroundColor: '#1B0333',
+    backgroundColor: custom_colors.primary_dark,
     paddingHorizontal: 20,
     marginLeft: 8,
     borderRadius: 20,
