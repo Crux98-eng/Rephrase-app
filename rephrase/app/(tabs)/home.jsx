@@ -37,6 +37,7 @@ const Home = () => {
   const [foundSearch, setFoundSearch] = useState(false);
   const [friends, setFriends] = useState([]);
   const [showModal, setShowmodal] = useState(false);
+  const [logedUser , setLogedUser]= useState(null);
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ['1%', '20%', '40%', '90%'], []);
   const profileColors = ['#FFCC00', '#33CC33', '#Ff3399'];
@@ -48,8 +49,35 @@ const Home = () => {
   }
   useEffect(() => {
     getFriends();
+    User();
   }, []);
 
+  //fetching loged user
+  const User = async()=>{
+    const currentUser = await AsyncStorage.getItem('user');
+    const {token} = JSON.parse(currentUser);
+    console.log("\n\n",token,"\n\n")
+    try{
+      setIsLoading(true);
+      const response = await fetch(`${API_URL}//api/users/me`,{
+        method:'GET',
+        headers:{
+          'Content-Type':'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if(response.ok){
+        const data  = await response.json();
+        console.log("user data ====",data);
+      }
+
+    }catch(err){
+      console.log(err);
+    }finally{
+      setIsLoading(false);
+    }
+
+  }
   const openBottomSheet = () => {
     bottomSheetRef.current?.expand();
   };

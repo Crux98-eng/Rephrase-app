@@ -1,5 +1,9 @@
 {
   "dependencies": {
     "firebase": "^11.8.1"
+  },
+  "devDependencies": {
+    "@react-native-community/cli": "^18.0.0",
+    "react-native": "^0.80.0"
   }
 }
