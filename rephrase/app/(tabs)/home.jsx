@@ -9,14 +9,16 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  TextInput
+  TextInput,
+  Dimensions
 } from 'react-native';
 import React, {
   useState,
   useRef,
   useMemo,
   useCallback,
-  useEffect
+  useEffect,
+
 } from 'react';
 import Card from '../components/card';
 import { router } from 'expo-router';
@@ -29,7 +31,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { custom_colors } from '../utilities/colors';
 import Mymodal from '../components/modal';
 const API_URL = 'https://rephrase-chatapi.onrender.com';
-
+const screenWidth = Dimensions.get("window").width;
 const Home = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -49,6 +51,7 @@ const Home = () => {
   }
   useEffect(() => {
     getFriends();
+    
     User();
   }, []);
 
@@ -56,19 +59,20 @@ const Home = () => {
   const User = async()=>{
     const currentUser = await AsyncStorage.getItem('user');
     const {token} = JSON.parse(currentUser);
-    console.log("\n\n",token,"\n\n")
+   // console.log("\n\n",token,"\n\n")
     try{
       setIsLoading(true);
       const response = await fetch(`${API_URL}//api/users/me`,{
         method:'GET',
         headers:{
+
           'Content-Type':'application/json',
           Authorization: `Bearer ${token}`
         }
       })
       if(response.ok){
         const data  = await response.json();
-        console.log("user data ====",data);
+       // console.log("user data ====",data);
       }
 
     }catch(err){
@@ -236,7 +240,13 @@ const Home = () => {
             renderItem={renderFriendCard}
           />
 
-          <TouchableOpacity onPress={openBottomSheet} >
+          <TouchableOpacity style={{
+           
+            position:'absolute',
+            marginTop:'90%',
+            marginLeft:screenWidth*0.7,
+            
+            }} onPress={openBottomSheet} >
             <Image
               source={require("../assets/icons/plus.png")}
               resizeMode='contain'
@@ -274,7 +284,7 @@ const Home = () => {
               )}
 
               {foundUser && (
-                <View style={{ width: '100%', marginTop: 20 }}>
+                <View style={{  marginTop: 20 }}>
                   <FriendRequest
                     addRequest={SendRequest}
                     removeRequest={() => setFoundUser(null)}
@@ -318,8 +328,9 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
-    // backgroundColor: '#fff',
+    
+     width:screenWidth*.9,
+     
   },
 
   // Top Horizontal List (Avatars)
@@ -394,8 +405,9 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     tintColor: custom_colors.primary_dark,
-    
-   left:'85%',
+    alignSelf:'flex-end',
+
+   //left:screenWidth*.5,
   },
 
   // Bottom Sheet
@@ -419,7 +431,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'grey',
     height: 60,
-    width:'80%',
+    width:screenWidth*.8,
     marginBottom: 10,
     marginRight: 40,
   },

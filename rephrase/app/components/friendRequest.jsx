@@ -1,109 +1,120 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Dimensions } from 'react-native';
+import React from 'react';
 
-const FriendRequest = ({ name, Color,isRequest, profile, confirmRequest, cancelRequest, addRequest, removeRequest }) => {
- 
-    
-    return (
-        <View style={styles.container}>
-            <TouchableOpacity>
-                <View style={[styles.profile,{backgroundColor:Color}]}>
-                    <Image
-                        source={profile ? { uri: profile } : require('../assets/icons/profile.png')}
-                        style={{ width: 40, height: 40,marginTop:20 }}
-                    />
-                </View>
-                <Text style={styles.names} >{name}</Text>
-            </TouchableOpacity>
-            {isRequest && (
-                <View style={styles.btn}>
-                    <TouchableOpacity onPress={confirmRequest} style={styles.button}>
-                        <Text style={{ color: 'blue' }}>Confirm</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={cancelRequest} style={styles.button}>
-                        <Text style={{ color: 'blue' }}>Cancel</Text>
-                    </TouchableOpacity>
-                </View>
-            )}
-            {!isRequest && (
-                <View style={styles.btn}>
-                    <TouchableOpacity onPress={addRequest} style={styles.button}>
-                        <Text style={{ color: 'blue' }}>Add</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={removeRequest} style={styles.button}>
-                        <Text style={{ color: 'blue' }}>Remove</Text>
-                    </TouchableOpacity>
+const screenWidth = Dimensions.get('window').width;
 
-                </View>
-
-            )
-            }
+const FriendRequest = ({
+  name,
+  Color,
+  isRequest,
+  profile,
+  confirmRequest,
+  cancelRequest,
+  addRequest,
+  removeRequest
+}) => {
+  return (
+    <View style={styles.card}>
+      <View style={styles.profileSection}>
+        <View style={[styles.avatarWrapper, { backgroundColor: Color }]}>
+          <Image
+            source={profile ? { uri: profile } : require('../assets/icons/profile.png')}
+            style={styles.avatar}
+          />
         </View>
-    )
-}
+        <Text style={styles.name}>{name}</Text>
+      </View>
 
-export default FriendRequest
+      <View style={styles.buttonsContainer}>
+        {isRequest ? (
+          <>
+            <TouchableOpacity onPress={confirmRequest} style={styles.button}>
+              <Text style={styles.buttonText}>Confirm</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={cancelRequest} style={styles.button}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            <TouchableOpacity onPress={addRequest} style={styles.button}>
+              <Text style={styles.buttonText}>Add</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={removeRequest} style={styles.button}>
+              <Text style={styles.buttonText}>Remove</Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
+    </View>
+  );
+};
+
+export default FriendRequest;
 
 const styles = StyleSheet.create({
-    container: {
-
-        backgroundColor: '#E6E6E6',
-        width: '100%',
-        height: 120,
-        justifyContent: 'center',
-        shadowColor: 'grey',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.2,
-        shadowRadius: 1,
-        elevation: 1,
-
-    },
-    names: {
-        position: 'absolute',
-        marginLeft: 130,
-         bottom:40,
-        fontSize: 24,
-        color: 'black',
-
-    },
-    btn: {
-        width: 300,
-        height: 50,
-        zIndex: 1,
-        display: 'flex',
-        marginLeft: 130,
-        flexDirection: 'row',
-        gap: 20,
-        position: 'absolute',
-        marginTop: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-
-    },
-    button: {
-        backgroundColor: '#E6E6E6',
-        paddingHorizontal: 50,
-        paddingVertical: 8,
-        borderRadius: 5,
-        shadowColor: 'black',
-        shadowOffset: { width: 2, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 3.5,
-        elevation: 5,
-
-
-    },
-    profile: {
-
-        width: 60,
-        height: 60,
-        borderRadius: '50%',
-        left: 20,
-        
-        alignItems: 'center',
-        overflow: 'hidden',
-
-
-    },
-
-})
+  card: {
+    width: screenWidth * 0.92,
+    backgroundColor: '#F0F0F3',
+    alignSelf: 'center',
+    borderRadius: 16,
+    marginVertical: 12,
+    padding: 16,
+    flexDirection: 'column',
+    shadowColor: '#fff',
+    shadowOffset: { width: -6, height: -6 },
+    shadowOpacity: 1,
+    shadowRadius: 6,
+    elevation: 6,
+  },
+  profileSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  avatarWrapper: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#d1cdc7',
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 6,
+    elevation: 6,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  name: {
+    marginLeft: 16,
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#333',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  button: {
+    flex: 1,
+    marginHorizontal: 6,
+    backgroundColor: '#F0F0F3',
+    paddingVertical: 10,
+    borderRadius: 12,
+    alignItems: 'center',
+    shadowColor: '#d1cdc7',
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  buttonText: {
+    color: '#007AFF',
+    fontWeight: '500',
+  },
+});
